@@ -38,7 +38,7 @@ imshow(img)
 end
 
 # selected best harris features
-@time feats2 = getapproxbestharris(imgg, 500, k=0.04)
+@time feats2 = getapproxbestharris(imgg, 500)
 
 
 # separate drawing image

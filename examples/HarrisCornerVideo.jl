@@ -5,14 +5,14 @@ using Images, ImageView, ImageDraw, ImageFeatures, Gtk.ShortNames, VideoIO
 
 @show projdir = joinpath(dirname(@__FILE__), "..")
 srcdir = joinpath(projdir,"src")
-include(srcdir, "SensorFeatureTracking.jl")
-include(srcdir, "Common.jl")
+include(joinpath(srcdir, "SensorFeatureTracking.jl"))
+include(joinpath(srcdir, "Common.jl"))
 
 
 
 
 
-function fromvideohandle(fhl ;iters=100, param1=0.15, param2=0.35)
+function fromvideohandle(fhl ;iters=50, param1=0.15, param2=0.35)
     grid, frames, canvases = canvasgrid((1,2))  # 1 row, 2 columns
 
     img = read(fhl)
@@ -24,21 +24,19 @@ function fromvideohandle(fhl ;iters=100, param1=0.15, param2=0.35)
     showall(win)
 
 
-    f = VideoIO.opencamera()
-
     for i in 1:iters
         read!(fhl, img)
 
         # imshow(canvases[1,1], img)
         imgg = Gray.(img)
         # corners = fastcorners(imgg, param1, param2)
-        corners = getharriscorners(imgg)
-        # corners = imcorner(imgg; method=harris)
-        fts1 = Features(corners)
+        # fts1 = Features(corners)
+        ## corners = getharriscorners(imgg)
+        fts1 = getapproxbestharris(imgg, 200)
 
         # draw the results
         for ft in fts1
-            drawfeaturecircle2d!(imgg, ft, radius=10)
+            drawfeaturecircle2d!(imgg, ft, radius=5)
         end
         imshow(canvases[1,2], imgg)
         sleep(0.001)
@@ -51,7 +49,12 @@ end
 
 
 
-# f = VideoIO.testvideo("annie_oakley")
-f = VideoIO.opencamera()
+# f = VideoIO.testvideo("annie_oakley") # this doesn't directly work for reading images in current version
+
+f = VideoIO.opencamera() #webcam
 fromvideohandle(f)
 close(f)
+
+
+
+#
