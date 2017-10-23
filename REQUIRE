@@ -2,7 +2,7 @@ julia 0.6
 Images
 ImageView
 VideoIO
-ImageFilters
+ImageFiltering
 ImageDraw
 ImageFeatures
 TestImages
