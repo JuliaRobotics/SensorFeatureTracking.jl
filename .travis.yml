@@ -13,7 +13,6 @@ addons:
   apt:
     packages:
       libavcodec-extra-54
-      ffmpeg
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.test("SensorFeatureTracking"; coverage=true)'
