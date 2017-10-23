@@ -16,12 +16,12 @@ addons:
     - tcl8.5
     - tk8.5
     - libcairo2
-    - libavcodec-extra-53
-    - libavdevice53
-    - libavfilter2
-    - libavformat53
-    - libavutil-extra-51
-    - libswscale2
+    - libavcodec-extra
+    - libavdevice-dev
+    - libavfilter-dev
+    - libavformat-dev
+    - libavutil-dev
+    - libswscale-dev
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.test("SensorFeatureTracking"; coverage=true)'
