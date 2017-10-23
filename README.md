@@ -1,4 +1,8 @@
 # SensorFeatureTracking
+
+[![Build Status](https://travis-ci.org/dehann/SensorFeatureTracking.jl.svg?branch=master)](https://travis-ci.org/dehann/SensorFeatureTracking.jl)
+[![codecov.io](https://codecov.io/github/dehann/SensorFeatureTracking.jl/coverage.svg?branch=master)](https://codecov.io/github/dehann/SensorFeatureTracking.jl?branch=master)
+
 Algorithms to track features of interest, such as KLT.
 
 ## Installing
@@ -17,6 +21,9 @@ Please see, as part of the development, two cases in the `examples` folder. Thes
 
 Please note this code is not yet optimized in any way. Performance can be improved.
 
-## Unit TEst
+## Unit Test
 
-Basic unit tests are currently under development in the `test` folder.
+Basic unit tests are currently under development in the `test` folder. Unit tests can be run by typing:
+```julia
+Pkg.test("SensorFeatureTracking")
+```
