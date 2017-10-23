@@ -1,0 +1,32 @@
+language: julia
+os:
+  - linux
+julia:
+  - 0.6
+  - nightly
+notifications:
+  email: false
+matrix:
+  allow_failures:
+    - julia: nightly
+addons:
+  apt:
+    packages:
+    - imagemagick
+    - tcl8.5
+    - tk8.5
+    - libcairo2
+    - libavcodec-extra
+    - libavdevice-dev
+    - libavfilter-dev
+    - libavformat-dev
+    - libavutil-dev
+    - libswscale-dev
+    - xvfb
+    - xauth
+    - libgtk-3-0
+script:
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.test("SensorFeatureTracking"; coverage=true)'
+after_success:
+  - julia -e 'cd(Pkg.dir("SensorFeatureTracking")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
