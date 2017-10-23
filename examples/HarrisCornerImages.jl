@@ -1,13 +1,16 @@
 # Harris corner features from image files
 
-using Images, ImageView, ImageDraw, ImageFeatures, Gtk.ShortNames, VideoIO
+using SensorFeatureTracking
 using TestImages
 
+# using Images, ImageView, ImageDraw, ImageFeatures, Gtk.ShortNames, VideoIO
+#
+#
+# @show projdir = joinpath(dirname(@__FILE__), "..")
+# srcdir = joinpath(projdir,"src")
+# include(joinpath(srcdir, "SensorFeatureTracking.jl"))
+# include(joinpath(srcdir, "Common.jl"))
 
-@show projdir = joinpath(dirname(@__FILE__), "..")
-srcdir = joinpath(projdir,"src")
-include(joinpath(srcdir, "SensorFeatureTracking.jl"))
-include(joinpath(srcdir, "Common.jl"))
 
 
 
