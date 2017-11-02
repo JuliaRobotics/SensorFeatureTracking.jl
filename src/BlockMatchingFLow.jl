@@ -1,4 +1,4 @@
-using ImageFeatures
+using ImageFeatures, Images
 
 type BlockTracker
 	image_width::Int64
