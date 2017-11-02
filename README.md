@@ -9,10 +9,10 @@ Algorithms to track features of interest, such as KLT.
 
 This is an unregistered Julia package, but can be readily installed from a Julia console:
 ```julia
-Pkg.clone("<URL TO YOUR GIT REPO FORK>")
+Pkg.clone("https://github.com/<YOURFORKEDREPO>/SensorFeatureTracking.jl.git")
 ```
 
-The original upstream master is at: `https://github.com/dehann/SensorFeatureTracking.jl.git`
+Upstream master is at: `https://github.com/dehann/SensorFeatureTracking.jl.git`
 
 
 ## Examples
