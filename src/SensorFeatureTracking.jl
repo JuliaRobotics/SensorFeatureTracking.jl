@@ -25,7 +25,6 @@ export
 
   # BlockMatching
   BlockTracker,
-  REGION_SIZE,
   compute_diff,
   compute_sad,
   compute_ssd,
