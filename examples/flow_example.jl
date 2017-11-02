@@ -1,11 +1,9 @@
-using Images, ImageView, ImageDraw, ImageFeatures, TestImages
-using SensorFeatureTracking
+using SensorFeatureTracking, FixedPointNumbers, Colors
+using ProfileView
 
 @show projdir = joinpath(dirname(@__FILE__), "..")
 srcdir = joinpath(projdir,"src")
 datadir = joinpath(projdir,"Data")
-include(joinpath(srcdir, "Common.jl"))
-include(joinpath(srcdir, "BlockMatchingFLow.jl"))
 
 ##
 #read images
@@ -73,6 +71,7 @@ im2 = im2[range...]
 feats = getApproxBestShiTomasi(im1,nfeatures=500, stepguess=0.95)
 
 flow = BlockTracker(ps+1,10,10,10000,Keypoints(feats),compute_ncc)
+flwtest = deepcopy(flow)
 # grid_features!(flow)
 
 image1 = deepcopy(im1)
@@ -81,10 +80,18 @@ oldfeats = deepcopy(flow.features)
 # @time block_tracker!(flow, im1, im2)
 @time block_tracker!(flow, im1, im2)
 
+@profile block_tracker!(flwtest, im1, im2) # JIT compiling
+Profile.clear()
+@profile block_tracker!(flwtest, im1, im2)
+
+
+ProfileView.view()
+
 
 blankImg = zeros(Gray{N0f8},ro,co)
 map((ft1,ft2)->drawfeatureLine!(blankImg, Feature(ft1),Feature(ft2)),oldfeats,flow.features)
 #
+
 for frame_idx = 52:99
 
     im1 = deepcopy(im2)
@@ -98,6 +105,7 @@ for frame_idx = 52:99
     oldfeats = deepcopy(flow.features)
 
 end
+
 
 # overlay tracking traces with image
 # o_img = (reinterpret(UInt8,blankImg)) .| (reinterpret(UInt8,im2))
