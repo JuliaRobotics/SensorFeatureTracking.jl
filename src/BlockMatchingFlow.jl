@@ -1,5 +1,5 @@
 # using ImageFeatures, Images
-type BlockTracker
+struct BlockTracker
 	search_size::Int64
 	flow_feature_threshold::Int64
 	flow_value_threshold::Int64

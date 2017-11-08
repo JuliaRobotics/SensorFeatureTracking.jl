@@ -1,6 +1,7 @@
 module SensorFeatureTracking
 
 using Images, ImageView, ImageDraw, ImageFeatures, Gtk.ShortNames, VideoIO
+using TransformUtils, CoordinateTransformations, StaticArrays
 
 export
   # new functions written here
@@ -33,9 +34,10 @@ export
   grid_features!
 
 
+
 include("Common.jl")
 include("BlockMatchingFlow.jl")
-
+include("SensorCameraGeometryUtils.jl")
 
 
 end
