@@ -1,6 +1,6 @@
 module SensorFeatureTracking
 
-using Images, ImageView, ImageDraw, ImageFeatures, Gtk.ShortNames, VideoIO
+using Images, ImageView, ImageDraw, ImageFeatures, Gtk.ShortNames, VideoIO, ImageFiltering
 
 export
   # new functions written here
@@ -31,11 +31,21 @@ export
   compute_ssd,
   compute_ncc,
   block_tracker!,
-  grid_features!
+  grid_features!,
+
+  # Tracking Algorithms
+  ImageTrackerSetup,
+  KTL_Tracker!,
+  trackOneFeaturePyramid,
+  trackOneFeature,
+  warpping!
+  
+
 
 
 include("Common.jl")
 include("BlockMatchingFlow.jl")
+include("KLTTrackingAlgorithms.jl")
 
 
 
