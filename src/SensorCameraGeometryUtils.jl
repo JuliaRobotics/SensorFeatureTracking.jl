@@ -63,25 +63,62 @@ function HornAbsoluteOrientation(a::Matrix{Float64},b::Matrix{Float64})
 
   N = zeros(4,4);
 
-  for n = 1:size(a,1);
-    li = [0;a[n,:]];
-    ri = [0;b[n,:]];
+  for n = 1:size(a,1)
+    li = [0;a[n,:]]
+    ri = [0;b[n,:]]
 
-    N = N + linmapR(ri)'*linmapL(li);
+    N = N + linmapR(ri)'*linmapL(li)
   end
 
   D,v = eig(N);
   d = diagm(D);
   # maxd = maximum(d);
   # maxind = find(maxd==d);
-  maxd, maxind = findmax(d)
+  maxd, maxind = findmax(D)
 
-  q = v[:,div(maxind,4)]
+  q = v[:,maxind]
   if (q[1]<0)
     q = -q;
   end
 
-  return Quaternion(q), v, d
+  return Quaternion(q)
+end
+
+
+function HornAbsoluteOrientation(a::Vector{Vector{Float64}},b::Vector{Vector{Float64}})
+  # rotate b into the frame of a
+
+  N = zeros(4,4)
+  valid_count = 0
+
+  for n = 1:size(a,1)
+    if isnan(a[n][1]) || isnan(b[n][1])
+        continue
+    end
+    li = [0;a[n]]
+    ri = [0;b[n]]
+
+    N = N + linmapR(ri)'*linmapL(li)
+    valid_count += 1;
+  end
+
+  if valid_count < 4
+      error("Not enough keypoints for a solution!")
+      return Quaternion()
+  end
+
+  D,v = eig(N)
+  d = diagm(D)
+  # maxd = maximum(d);
+  # maxind = find(maxd==d);
+  maxd, maxind = findmax(D)
+
+  q = v[:,maxind]
+  if (q[1]<0)
+    q = -q;
+  end
+
+  return Quaternion(q)
 end
 
 """
@@ -116,4 +153,58 @@ function linmapR(q)
        qz   qy  -qx   q0];
 
   return Q
+end
+
+
+"""
+    integrateGyroBetweenFrames!(index, current_time, vector_data)
+
+Estimate rotations from IMU data between time stamps.
+"""
+function integrateGyroBetweenFrames!(index::PInt64, ctime::Int64, imudata::Vector{IMU_DATA})
+
+	R = eye(3)
+
+	n = size(imudata,1)
+
+	#end of imudata
+	if (index.i >= n)
+ 		return (false, eye(3))
+	end
+
+	#increment index to start at 2 for integration, ignore first
+    (index.i < 2)? index.i+=1:nothing
+
+	while (index.i < n) && (imudata[index.i].utime  < ctime)
+
+		dt = Float64(imudata[index.i].utime - imudata[index.i-1].utime)/1e6
+
+		propR!(R, imudata[index.i].gyro, dt)
+
+		# println("@$(index.i) : $(cR)")
+		index.i += 1
+	end
+
+	return (true, R)
+
+end
+
+
+"""
+	estimateRotationFromKeypoints(points_a, points_b)
+
+Estimate the rotation between 2 sets of Keypoints a and be using HornAbsoluteOrientation
+"""
+function estimateRotationFromKeypoints(points_a::Keypoints, points_b::Keypoints, cam::CameraModelandParameters)
+
+	focald = cam.fc[1] #assume 1:1 aspect ratio for now TODO
+	#create a Vector of 3d vectors for valid keypoints (ie. not 0) else NaN
+	nps_a = map(kp -> (kp[1] > 0 < kp[2])? [kp[1], kp[2], focald] : [NaN,NaN,NaN], points_a)
+	nps_b = map(kp -> (kp[1] > 0 < kp[2])? [kp[1], kp[2], focald] : [NaN,NaN,NaN], points_b)
+	#normalize vectors
+	nps_a .= nps_a./norm.(nps_a)
+	nps_b .= nps_b./norm.(nps_b)
+
+	return HornAbsoluteOrientation(nps_a,nps_b)
+
 end

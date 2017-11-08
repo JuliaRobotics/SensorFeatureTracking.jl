@@ -23,6 +23,9 @@ export
   Keypoints,
   Feature,
   colorview,
+  # from TransformUtils
+  rotate,
+  rotate!,
 
   # BlockMatching
   BlockTracker,
@@ -31,8 +34,15 @@ export
   compute_ssd,
   compute_ncc,
   block_tracker!,
-  grid_features!
+  grid_features!,
 
+  # Sensor and Camera Geometry Utilities
+  IMU_DATA,
+  PInt64,
+  CameraModel,
+  integrateGyroBetweenFrames!,
+  estimateRotationFromKeypoints,
+  HornAbsoluteOrientation
 
 
 include("Common.jl")
