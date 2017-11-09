@@ -111,6 +111,9 @@ oQc = HornAbsoluteOrientation(gyroAX, trackAX)
 
 ## Rotate trackAX into alignment with IMU Axis to test
 # TODO: does not seem to be working
+# iQc = Quaternion()
+# 	iQc.s = 0.697815224446998;
+# 	iQc.v = [0.715977169639074, 0.014522897934957, 0.014821960773685]
 
 trackAX_b = TransformUtils.rotate.(oQc, trackAX)
 
@@ -124,10 +127,10 @@ for i = 1:N
 	trackAX_m[i,:] = trackAX[i]
 end
 ##
-p1 = plot(gyroAX_m[startFrame:startFrame+numFrames,:])
+p1 = plot(gyroAX_m[startFrame:startFrame+numFrames,:] - trackAX_b_m[startFrame:startFrame+numFrames,:])
 ##
-p2 = plot(trackAX_b_m[startFrame:startFrame+numFrames,:])
+# p2 = plot(trackAX_b_m[startFrame:startFrame+numFrames,:])
 ##
-p3 = plot(trackAX_m[startFrame:startFrame+numFrames,:])
+p2 = plot(gyroAX_m[startFrame:startFrame+numFrames,:] - trackAX_m[startFrame:startFrame+numFrames,:])
 ##
-plot(p1,p2,p3,layout=(3,1))
+plot(p1,p2,layout=(2,1))

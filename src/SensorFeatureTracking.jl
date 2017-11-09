@@ -42,6 +42,8 @@ export
   CameraModel,
   integrateGyroBetweenFrames!,
   estimateRotationFromKeypoints,
+  predictHomographyIMU!,
+  predictAffinity,
   HornAbsoluteOrientation
 
 

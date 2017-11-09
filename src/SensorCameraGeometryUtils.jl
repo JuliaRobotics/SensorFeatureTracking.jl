@@ -208,3 +208,65 @@ function estimateRotationFromKeypoints(points_a::Keypoints, points_b::Keypoints,
 	return HornAbsoluteOrientation(nps_a,nps_b)
 
 end
+
+
+"""
+    predictHomographyIMU!(index, current_time, vector_data, CameraK, CameraK_inverse)
+
+Estimate camera rotation from IMU data and compute predicted homography
+"""
+function predictHomographyIMU!(index::PInt64, ctime::Int64, imudata::Vector{IMU_DATA},K::Array{Float64,2},Ki::Array{Float64,2}; cRi::Array{Float64,2} = eye(3))
+
+	R = eye(3)
+
+	n = size(imudata,1)
+
+	#end of imudata
+	if (index.i >= n)
+ 		return (false, eye(3))
+	end
+
+	#increment index to start at 2 for integration, ignore first
+    (index.i < 2)? index.i+=1:nothing
+
+	while (index.i < n) && (imudata[index.i].utime  < ctime)
+
+		dt = Float64(imudata[index.i].utime - imudata[index.i-1].utime)/1e6
+
+		SensorFeatureTracking.propR!(R, cRi * imudata[index.i].gyro, dt)
+
+		# println("@$(index.i) : $(cR)")
+		index.i += 1
+	end
+
+	#compute homography
+	# H = K*R*inv(K)
+    R4 = eye(4)
+    R4[1:3,1:3] = R
+    K4 = eye(4)
+    K4[1:2,1:2] = K[1:2,1:2]
+    K4[1:2,4] = K[1:2,3]
+    H = K4*R4*inv(K4)
+# H./H[3,3] ??
+	return (true, H);
+end
+
+
+function predictHomographyIMU(roll::Float64, pitch::Float64, yaw::Float64, K::Array{Float64,2}, Ki::Array{Float64,2})
+
+    R = eye(4)
+    R[1:3,1:3] = SO3(Euler(roll,pitch,yaw)).R
+
+    K4 = eye(4)
+    K4[1:2,1:2] = K[1:2,1:2]
+    K4[1:2,4] = K[1:2,3]
+    H = K4*R*inv(K4)
+# H./H[3,3] ??
+    return  K4*R*inv(K4)
+end
+
+function predictAffinity(H::Matrix{Float64})
+
+    return AffineMap(SMatrix{2,2}(H[1:2,1:2]), SVector{2}(H[1:2,:]*[0,0,1,1]))
+
+end
