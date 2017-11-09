@@ -27,8 +27,10 @@ update_reference_frame_count = 10
 
 number_frames = frame_counter_to - frame_counter_from +1
 
-img = load("../Data/testSequence/image_$(frame_counter_from - 1).jpg")
-img_end = load("../Data/testSequence/image_$(frame_counter_to).jpg")
+
+
+img = load(joinpath(dirname(@__FILE__),"../Data/testSequence/image_$(frame_counter_from - 1).jpg"))
+img_end = load(joinpath(dirname(@__FILE__),"../Data/testSequence/image_$(frame_counter_to).jpg"))
 
 I = Gray.(img);
 orgI_setup = deepcopy(img)
@@ -61,7 +63,7 @@ while frame_counter <= number_frames
     @show frame_counter
     window_counter += 1
     # Load next image
-    NextFrame = load("../Data/testSequence/image_$(frame_counter + frame_counter_from - 1).jpg")
+    NextFrame = load(joinpath(dirname(@__FILE__),"../Data/testSequence/image_$(frame_counter + frame_counter_from - 1).jpg"))
     NextFrame = Gray.(NextFrame)
     NextFrame = convert(Array{Float64}, NextFrame)
     I_nextFrame = convert(Array{Float64}, NextFrame)
