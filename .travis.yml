@@ -27,7 +27,7 @@ addons:
     - libgtk-3-0
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.test("SensorFeatureTracking"; coverage=true)'
+  - julia --check-bounds=yes -e 'Pkg.clone(pwd());
 after_success:
   - julia -e 'cd(Pkg.dir("SensorFeatureTracking")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
   - julia -e 'Pkg.add("Documenter")'
