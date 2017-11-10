@@ -25,6 +25,7 @@ addons:
     - xvfb
     - xauth
 script:
+  - julia -e 'Pkg.clone("https://github.com/Affie/SensorFeatureTracking.jl.git")'
   - julia -e 'Pkg.add("Documenter")'
   - julia -e 'cd(Pkg.dir("SensorFeatureTracking")); include(joinpath("docs", "make.jl"))'
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
