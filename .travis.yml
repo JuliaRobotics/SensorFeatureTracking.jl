@@ -24,7 +24,6 @@ addons:
     - libswscale-dev
     - xvfb
     - xauth
-    - libgtk-3-0
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia --check-bounds=yes -e 'Pkg.clone(pwd());
