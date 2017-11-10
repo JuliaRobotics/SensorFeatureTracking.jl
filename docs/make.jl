@@ -13,7 +13,7 @@ makedocs(
 
 
 deploydocs(
-    repo   = "github.com/dehann/SensorFeatureTracking.jl.git",
+    repo   = "github.com/Affie/SensorFeatureTracking.jl.git",
     target = "build",
     deps   = nothing,
     make   = nothing,
