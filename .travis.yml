@@ -25,9 +25,10 @@ addons:
     - xvfb
     - xauth
 script:
+  - julia -e 'Pkg.add("Documenter")'
+  - julia -e 'cd(Pkg.dir("SensorFeatureTracking")); include(joinpath("docs", "make.jl"))'
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia --check-bounds=yes -e 'Pkg.clone(pwd());
 after_success:
   - julia -e 'cd(Pkg.dir("SensorFeatureTracking")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
-  - julia -e 'Pkg.add("Documenter")'
-  - julia -e 'cd(Pkg.dir("SensorFeatureTracking")); include(joinpath("docs", "make.jl"))'
+
