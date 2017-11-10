@@ -6,4 +6,7 @@ ImageFiltering
 ImageDraw
 ImageFeatures
 TestImages
+TransformUtils
+CoordinateTransformations
+Rotations
 #RecursiveFiltering

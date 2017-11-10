@@ -54,9 +54,9 @@ end
 """
     HornAbsoluteOrientation(⊽a, ⊽b)
 
-Compute the rotation between array of row vectors (a and b).
+Compute the rotation between rows of (a and b)::Array{Float64,2}.
 Rotate b into the frame of a
-Returns a quaternion, aQb?
+Returns a quaternion, aQb
 """
 function HornAbsoluteOrientation(a::Matrix{Float64},b::Matrix{Float64})
   # rotate b into the frame of a
