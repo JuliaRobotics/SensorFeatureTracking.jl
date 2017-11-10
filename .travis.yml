@@ -1,6 +1,8 @@
 language: julia
 os:
   - linux
+before_install:
+  sudo apt-get install libgtk-3-0
 julia:
   - 0.6
   - nightly
@@ -12,19 +14,19 @@ matrix:
 addons:
   apt:
     packages:
-    - imagemagick
-    - tcl8.5
-    - tk8.5
-    - libcairo2
-    - libavcodec-extra
-    - libavdevice-dev
-    - libavfilter-dev
-    - libavformat-dev
-    - libavutil-dev
-    - libswscale-dev
-    - xvfb
-    - xauth
-    - libgtk-3-0
+      - imagemagick
+      - tcl8.5
+      - tk8.5
+      - libcairo2
+      - libavcodec-extra
+      - libavdevice-dev
+      - libavfilter-dev
+      - libavformat-dev
+      - libavutil-dev
+      - libswscale-dev
+      - xvfb
+      - xauth
+      - libgtk-3-0
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.test("SensorFeatureTracking"; coverage=true)'
