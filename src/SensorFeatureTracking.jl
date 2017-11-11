@@ -45,7 +45,7 @@ export
   estimateRotationFromKeypoints,
   predictHomographyIMU!,
   predictAffinity,
-  HornAbsoluteOrientation
+  HornAbsoluteOrientation,
 
   # Tracking Algorithms
   ImageTrackerSetup,
@@ -53,7 +53,7 @@ export
   trackOneFeaturePyramid,
   trackOneFeature,
   warpping!
-  
+
 
 include("Common.jl")
 include("BlockMatchingFlow.jl")

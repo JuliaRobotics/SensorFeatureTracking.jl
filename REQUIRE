@@ -1,9 +1,12 @@
 julia 0.6
 Images
 ImageView
-VideoIO
-ImageFiltering
 ImageDraw
 ImageFeatures
+VideoIO
+ImageFiltering
 TestImages
+TransformUtils
+CoordinateTransformations
+StaticArrays
 #RecursiveFiltering
