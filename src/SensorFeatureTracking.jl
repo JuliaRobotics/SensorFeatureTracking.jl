@@ -38,6 +38,7 @@ export
 
 
   # Sensor and Camera Geometry Utilities
+  CameraModelandParameters,
   IMU_DATA,
   PInt64,
   CameraModel,
