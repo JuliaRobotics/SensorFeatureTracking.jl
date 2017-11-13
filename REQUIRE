@@ -9,4 +9,5 @@ TestImages
 TransformUtils
 CoordinateTransformations
 StaticArrays
+Rotations
 #RecursiveFiltering
