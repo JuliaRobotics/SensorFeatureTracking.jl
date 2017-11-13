@@ -1,4 +1,9 @@
+# camera model
 
+"""
+Data structure for a Camera model with parameters.
+Use `CameraModel(width,height,fc,cc,skew,kc)` for easy construction.
+"""
 struct CameraModelandParameters
     width::Integer		# image width
     height::Integer		# image height
@@ -10,6 +15,11 @@ struct CameraModelandParameters
     Ki::Matrix{Float64} # inverse of a 3x3 camera calibratio matrix
 end
 
+"""
+    CameraModel(width,height,fc,cc,skew,kc)
+
+Constructor helper for creating a camera model. 
+"""
 function CameraModel(width,height,fc,cc,skew,kc)
     KK = [fc[1]      skew  cc[1];
              0       fc[2] cc[2];
@@ -26,6 +36,14 @@ mutable struct PInt64
     i::Int64
 end
 
+"""
+Data structure for holding time, gyroscope, and accelerometer data.
+
+**Fields**
+ - `utime` -- time [μs]
+ - `acc`   -- accelerometer data
+ - `gyro`  -- gyroscope data
+"""
 struct IMU_DATA
 	utime::Int64
 	acc::Vector{Float64}
