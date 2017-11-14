@@ -52,6 +52,6 @@ using Base: Test
   # there must be at least 4 valid keypoints to track
   q = estimateRotationFromKeypoints(points_a,points_b, cam, compensate = true)
   qref = convert(Quaternion, Euler(0.,0.,pi/2.))
-  @test compare(q, qref)
+  @test compare(q, qref, tol = 1e-4)
 
 end
