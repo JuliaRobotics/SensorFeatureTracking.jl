@@ -203,9 +203,9 @@ function trackOneFeaturePyramid(ITVar, ITConst, corner_i)
 
             #1 Warp I with w
             if count_pyramid == 1
-                warpping!(I_warped, ITVar.I_nextFrame_downsample, ITConst.x, ITConst.y, W_p)
+                warping!(I_warped, ITVar.I_nextFrame_downsample, ITConst.x, ITConst.y, W_p)
             else
-                warpping!(I_warped, ITVar.I_nextFrame, ITConst.x, ITConst.y, W_p)
+                warping!(I_warped, ITVar.I_nextFrame, ITConst.x, ITConst.y, W_p)
             end
 
             #2 Subtract I from T
@@ -217,8 +217,8 @@ function trackOneFeaturePyramid(ITVar, ITConst, corner_i)
             end
 
             #3 Warp the gradient
-            warpping!(Ix, Ix_grad, ITConst.x, ITConst.y, W_p);
-            warpping!(Iy, Iy_grad, ITConst.x, ITConst.y, W_p);
+            warping!(Ix, Ix_grad, ITConst.x, ITConst.y, W_p);
+            warping!(Iy, Iy_grad, ITConst.x, ITConst.y, W_p);
 
             #4 Compute steepest descent
             I_steepest=zeros(length(ITConst.x),6);
@@ -306,7 +306,7 @@ function trackOneFeature(ITVar, ITConst, corner_i)
         W_p = [ 1+p[1] p[3] p[5]; p[2] 1+p[4] p[6]];
 
         #1 Warp I with w
-        warpping!(I_warped, ITVar.I_nextFrame, ITConst.x, ITConst.y, W_p)
+        warping!(I_warped, ITVar.I_nextFrame, ITConst.x, ITConst.y, W_p)
 
         #2 Subtract I from T
         I_error= T - I_warped
@@ -318,8 +318,8 @@ function trackOneFeature(ITVar, ITConst, corner_i)
         end
 
         #3 Warp the gradient
-        warpping!(Ix, Ix_grad, ITConst.x, ITConst.y, W_p);
-        warpping!(Iy, Iy_grad, ITConst.x, ITConst.y, W_p);
+        warping!(Ix, Ix_grad, ITConst.x, ITConst.y, W_p);
+        warping!(Iy, Iy_grad, ITConst.x, ITConst.y, W_p);
 
         #4 Compute steepest descent
         I_steepest=zeros(length(ITConst.x),6);
@@ -360,7 +360,7 @@ end
 #############
 #############
 """
-    warpping!(Iout,Iin,x,y,M)
+    warping!(Iout,Iin,x,y,M)
 
 Iout:   returned warped image
 Iin:    image to be warped
@@ -370,79 +370,53 @@ M:      affine matrix for template rotation and translation
 
 Return a warped image
 """
+function warping!(Iout,Iin,x,y,M)
+    # Affine transformation function (Rotation, Translation, Resize)
+    # Calculate the Transformed coordinates
 
-function warpping!(Iout,Iin,x,y,M)
-# Calculate the Transformed coordinates
-Tlocalx =  M[1,1] .* x + M[1,2] .* y + M[1,3]
-Tlocaly =  M[2,1] .* x + M[2,2] .* y + M[2,3]
+    Tlocalx =  M[1,1] * x + M[1,2] *y + M[1,3]
+    Tlocaly =  M[2,1] * x + M[2,2] *y + M[2,3]
 
-# All the neighborh pixels involved in linear interpolation.
-xBas0=floor(Integer, Tlocalx)
-yBas0=floor(Integer, Tlocaly)
+    #Iout  = interp2(Iin, Tlocalx, Tlocaly,'*linear');
+    # All the neighborh pixels involved in linear interpolation.
+    xBas0=floor.(Int64, Tlocalx)
+    yBas0=floor.(Int64, Tlocaly)
+    xBas1=xBas0+1
+    yBas1=yBas0+1
 
-xBas1=xBas0+1
-yBas1=yBas0+1
+    # Linear interpolation constants (percentages)
+    xCom=Tlocalx-xBas0
+    yCom=Tlocaly-yBas0
+    perc0=(1-xCom).*(1-yCom)
+    perc1=(1-xCom).*yCom
+    perc2=xCom.*(1-yCom)
+    perc3=xCom.*yCom
 
-# Linear interpolation constants (percentages)
-xCom=Tlocalx-xBas0
-yCom=Tlocaly-yBas0
-perc0=(1-xCom).*(1-yCom)
-perc1=(1-xCom).*yCom
-perc2=xCom.*(1-yCom)
-perc3=xCom.*yCom
+    # limit indexes to boundaries
+    check_xBas0=(xBas0.<0).|(xBas0.>(size(Iin,1)-1))
+    check_yBas0=(yBas0.<0).|(yBas0.>(size(Iin,2)-1))
+    xBas0[check_xBas0]=0
+    yBas0[check_yBas0]=0
+    check_xBas1=(xBas1.<0).|(xBas1.>(size(Iin,1).-1))
+    check_yBas1=(yBas1.<0).|(yBas1.>(size(Iin,2).-1))
+    xBas1[check_xBas1]=0
+    yBas1[check_yBas1]=0
 
-# limit indexes to boundaries
-check_xBas0=(xBas0.<0).|(xBas0.>(size(Iin,1)-1))
-check_yBas0=(yBas0.<0).|(yBas0.>(size(Iin,2)-1))
-xBas0[check_xBas0]=0
-yBas0[check_yBas0]=0
-check_xBas1=(xBas1.<0).|(xBas1.>(size(Iin,1).-1))
-check_yBas1=(yBas1.<0).|(yBas1.>(size(Iin,2).-1))
-xBas1[check_xBas1]=0
-yBas1[check_yBas1]=0
+    # Iout=zeros(Float64, size(x, 1), size(x, 2))
 
-Iin_one=Iin[:,:]
+    Iin_one = Iin
+    # Get the intensities
+    intensity_xyz0=Iin_one[1+xBas0+yBas0*size(Iin,1)];
+    intensity_xyz1=Iin_one[1+xBas0+yBas1*size(Iin,1)];
+    intensity_xyz2=Iin_one[1+xBas1+yBas0*size(Iin,1)];
+    intensity_xyz3=Iin_one[1+xBas1+yBas1*size(Iin,1)];
 
-# Get the intensities
-intensity_xyz0=Iin_one[1 .+ xBas0 .+ yBas0*size(Iin,1)]
-intensity_xyz1=Iin_one[1 .+ xBas0 .+ yBas1*size(Iin,1)]
-intensity_xyz2=Iin_one[1 .+ xBas1 .+ yBas0*size(Iin,1)]
-intensity_xyz3=Iin_one[1 .+ xBas1 .+ yBas1*size(Iin,1)]
-Iout[:,:] = intensity_xyz0 .* perc0 + intensity_xyz1 .* perc1 + intensity_xyz2 .* perc2 + intensity_xyz3 .* perc3
-# Iout[:,:]=reshape(Iout_one, size(x,1), size(x,2))
+    Iout[:,:] .= intensity_xyz0 .* perc0 .+ intensity_xyz1 .* perc1 .+ intensity_xyz2 .* perc2 .+ intensity_xyz3 .* perc3;
+    # Iout[:,:,i]=reshape(Iout_one, (size(x,1) size(x,2)));
+    # Iout[:,:]=reshape(Iout_one, size(x,1), size(x,2))
 
-# end
-return nothing
+
+    # end
+    return nothing
+
 end
-
-############ This already exist in common
-# ############
-# """
-#     getApproxBestHarrisInWindow(image,[nfeatures=100, window = 9, k=0.04, stepguess=0.9, threshold = 1e-4])
-#
-# Return the n best Harris features in a window
-# """
-# 
-# function getApproxBestHarrisInWindow(iml;nfeatures=100, window = 9, k=0.04, stepguess=0.9,threshold = 1e-4)
-#     harris_response = harris(iml)
-#
-#     maxima = mapwindow(maximum,harris_response,(window,window))
-#     window_max = (harris_response .== maxima).*harris_response
-#
-#     mth = maximum(window_max)
-#
-#     nfea = 0
-#     targnfea = nfeatures
-#     ftsl = nothing
-#     while nfea < targnfea
-#         mth *= stepguess
-#         resp = map(i -> i > mth, window_max);
-#         ftsl = Features(resp)
-#         nfea = length(ftsl)
-#         if mth < threshold break end
-#     end
-#     return ftsl[1: min(nfeatures, nfea)]
-# end
-#
-#
-##
