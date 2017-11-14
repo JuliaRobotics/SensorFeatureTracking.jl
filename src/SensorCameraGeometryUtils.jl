@@ -18,7 +18,7 @@ end
 """
     CameraModel(width,height,fc,cc,skew,kc)
 
-Constructor helper for creating a camera model. 
+Constructor helper for creating a camera model.
 """
 function CameraModel(width,height,fc,cc,skew,kc)
     KK = [fc[1]      skew  cc[1];
@@ -70,10 +70,11 @@ end
 
 
 """
-    HornAbsoluteOrientation(⊽a, ⊽b)
+    HornAbsoluteOrientation(a::Matrix{Float64},b::Matrix{Float64})
+    HornAbsoluteOrientation(a::Vector{Vector{Float64}},b::Vector{Vector{Float64}})
 
-Compute the rotation between rows of (a and b)::Array{Float64,2}.
-Rotate b into the frame of a
+Compute the rotation between rows of (a and b)::Array{Float64,2}.\\
+Rotate b into the frame of a\\
 Returns a quaternion, aQb
 """
 function HornAbsoluteOrientation(a::Matrix{Float64},b::Matrix{Float64})
@@ -121,7 +122,7 @@ function HornAbsoluteOrientation(a::Vector{Vector{Float64}},b::Vector{Vector{Flo
   end
 
   if valid_count < 4
-      error("Not enough keypoints for a solution!")
+      error("Not enough vectors for a solution!")
       return Quaternion()
   end
 
@@ -186,14 +187,14 @@ function integrateGyroBetweenFrames!(index::PInt64, ctime::Int64, imudata::Vecto
 	n = size(imudata,1)
 
 	#end of imudata
-	if (index.i >= n)
+	if (index.i > n)
  		return (false, eye(3))
 	end
 
 	#increment index to start at 2 for integration, ignore first
     (index.i < 2)? index.i+=1:nothing
 
-	while (index.i < n) && (imudata[index.i].utime  < ctime)
+	while (index.i <= n) && (imudata[index.i].utime <= ctime)
 
 		dt = Float64(imudata[index.i].utime - imudata[index.i-1].utime)/1e6
 
@@ -209,16 +210,23 @@ end
 
 
 """
-	estimateRotationFromKeypoints(points_a, points_b)
+	estimateRotationFromKeypoints(points_a, points_b, cameraModel, [compensate = false])
 
-Estimate the rotation between 2 sets of Keypoints a and be using HornAbsoluteOrientation
+Estimate the rotation between 2 sets of Keypoints a and b using HornAbsoluteOrientation.\\
+It is assumed that only possitive Keypoints are valid.\\
+Set compensate to true if rotaion should be around centre off image rather than 0,0
 """
-function estimateRotationFromKeypoints(points_a::Keypoints, points_b::Keypoints, cam::CameraModelandParameters)
+function estimateRotationFromKeypoints(points_a::Keypoints, points_b::Keypoints, cam::CameraModelandParameters; compensate = false)
 
 	focald = cam.fc[1] #assume 1:1 aspect ratio for now TODO
 	#create a Vector of 3d vectors for valid keypoints (ie. not 0) else NaN
 	nps_a = map(kp -> (kp[1] > 0 < kp[2])? [kp[1], kp[2], focald] : [NaN,NaN,NaN], points_a)
 	nps_b = map(kp -> (kp[1] > 0 < kp[2])? [kp[1], kp[2], focald] : [NaN,NaN,NaN], points_b)
+    if compensate
+        # compensate offset to centre of camera
+        nps_a = map(nps -> nps - [cam.cc; 0.], nps_a)
+        nps_b = map(nps -> nps - [cam.cc; 0.], nps_b)
+    end
 	#normalize vectors
 	nps_a .= nps_a./norm.(nps_a)
 	nps_b .= nps_b./norm.(nps_b)
