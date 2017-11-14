@@ -85,7 +85,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "SensorFeatureTracking.getApproxBestHarrisInWindow",
     "category": "Function",
-    "text": "getApproxBestHarrisInWindow(image,[nfeatures=100, window = 9, k=0.04, stepguess=0.9, threshold = 1e-4])\n\nReturn the n best Harris features in a window\n\n\n\n"
+    "text": "getApproxBestHarrisInWindow(image,[n=100, windowSize = 9, k=0.04, stepguess=0.4])\n\nReturn the n best Harris features in a window\n\n\n\n"
 },
 
 {
@@ -145,46 +145,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "func_ref.html#SensorFeatureTracking.ImageTrackerSetup",
-    "page": "Functions",
-    "title": "SensorFeatureTracking.ImageTrackerSetup",
-    "category": "Function",
-    "text": "ImageTrackerSetup(orgI_setup, corners,[windowSize = 20, downsampleFactor_setup = 2])\n\norgI_setup:             Image to do trackingon corners:                List of corners, preferably a returned list from getApproxBestHarrisInWindow() windowSize              Half the size of the window to look for a matching feature. Actual window size is windowSize * 2 + 1, windowSize = 20 will result in a 41x41 window downsampleFactor_setup  downsampleFactor_setup = 2: use pyramid images (first track on a downsampled image, then on the regular image with a smaller windowsize), increases speed. Set downsampleFactor_setup = 1 to use only regular image\n\nReturns two structures, one of type ImageTrackerVariables and one of type ImageTrackerConstants\n\n\n\n"
-},
-
-{
-    "location": "func_ref.html#SensorFeatureTracking.trackOneFeature",
-    "page": "Functions",
-    "title": "SensorFeatureTracking.trackOneFeature",
-    "category": "Function",
-    "text": "trackOneFeature(ITVar, ITConst, corner_i)\n\nITVar:   construct of variables of type ImageTrackerVariables ITConst: construct of constants of type ImageTrackerConstants corner_i:index of selected corner in ITVar.p_reference to do tracking on\n\nReturns nothing, updates p_reference[2,corner_i] with the new coordinates of the tracked feature Does not use orgI_downsample or I_nextFrame_downsample at all, downsampleFactor must be 1\n\n\n\n"
-},
-
-{
-    "location": "func_ref.html#SensorFeatureTracking.KTL_Tracker!",
-    "page": "Functions",
-    "title": "SensorFeatureTracking.KTL_Tracker!",
-    "category": "Function",
-    "text": "KTL_Tracker!(ITVar, ITConst)\n\nITVar:   construct of variables of type ImageTrackerVariables ITConst: construct of constants of type ImageTrackerConstants\n\nReturns nothing, updates p_reference[2,:] with the new coordinates of the tracked features\n\n\n\n"
-},
-
-{
-    "location": "func_ref.html#SensorFeatureTracking.trackOneFeaturePyramid",
-    "page": "Functions",
-    "title": "SensorFeatureTracking.trackOneFeaturePyramid",
-    "category": "Function",
-    "text": "trackOneFeature(ITVar, ITConst, corner_i)\n\nITVar:   construct of variables of type ImageTrackerVariables ITConst: construct of constants of type ImageTrackerConstants corner_i:index of selected corner in ITVar.p_reference to do tracking on\n\nReturns nothing, updates p_reference[2,corner_i] with the new coordinates of the tracked feature Use orgI_downsample and I_nextFrame_downsample to track features, downsampleFactor must be 2 for now, can be increased in future work\n\n\n\n"
-},
-
-{
-    "location": "func_ref.html#SensorFeatureTracking.warpping!",
-    "page": "Functions",
-    "title": "SensorFeatureTracking.warpping!",
-    "category": "Function",
-    "text": "warpping!(Iout,Iin,x,y,M)\n\nIout:   returned warped image Iin:    image to be warped x:      derivatives kernel on x axis y:      derivatives kernel on y axis M:      affine matrix for template rotation and translation\n\nReturn a warped image\n\n\n\n"
-},
-
-{
     "location": "func_ref.html#KLT-Feature-Tracking-1",
     "page": "Functions",
     "title": "KLT Feature Tracking",
@@ -205,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "SensorFeatureTracking.CameraModel",
     "category": "Function",
-    "text": "CameraModel(width,height,fc,cc,skew,kc)\n\nConstructor helper for creating a camera model. \n\n\n\n"
+    "text": "CameraModel(width,height,fc,cc,skew,kc)\n\nConstructor helper for creating a camera model.\n\n\n\n"
 },
 
 {
@@ -229,7 +189,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "SensorFeatureTracking.estimateRotationFromKeypoints",
     "category": "Function",
-    "text": "estimateRotationFromKeypoints(points_a, points_b)\n\nEstimate the rotation between 2 sets of Keypoints a and be using HornAbsoluteOrientation\n\n\n\n"
+    "text": "estimateRotationFromKeypoints(points_a, points_b, cameraModel, [compensate = false])\n\nEstimate the rotation between 2 sets of Keypoints a and b using HornAbsoluteOrientation.\nIt is assumed that only possitive Keypoints are valid.\nSet compensate to true if rotaion should be around centre off image rather than 0,0\n\n\n\n"
 },
 
 {
@@ -253,7 +213,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "SensorFeatureTracking.HornAbsoluteOrientation",
     "category": "Function",
-    "text": "HornAbsoluteOrientation(⊽a, ⊽b)\n\nCompute the rotation between rows of (a and b)::Array{Float64,2}. Rotate b into the frame of a Returns a quaternion, aQb\n\n\n\n"
+    "text": "HornAbsoluteOrientation(a::Matrix{Float64},b::Matrix{Float64})\nHornAbsoluteOrientation(a::Vector{Vector{Float64}},b::Vector{Vector{Float64}})\n\nCompute the rotation between rows of (a and b)::Array{Float64,2}.\nRotate b into the frame of a\nReturns a quaternion, aQb\n\n\n\n"
 },
 
 {
