@@ -51,8 +51,7 @@ using Base: Test
   push!(points_b, CartesianIndex(239,321), CartesianIndex(241,321),  CartesianIndex(241,319), CartesianIndex(239,319))
   # there must be at least 4 valid keypoints to track
   q = estimateRotationFromKeypoints(points_a,points_b, cam, compensate = true)
-  qref = TransformUtils.convert(TransformUtils.Quaternion, TransformUtils.Euler(0.,0.,pi/2.))
-  @show q, qref
-  @test TransformUtils.compare(q, qref)
+  qref = convert(Quaternion, Euler(0.,0.,pi/2.))
+  @test compare(q, qref, tol = 1e-4)
 
 end
