@@ -415,34 +415,34 @@ Iout[:,:] = intensity_xyz0 .* perc0 + intensity_xyz1 .* perc1 + intensity_xyz2 .
 return nothing
 end
 
-############
-############
-"""
-    getApproxBestHarrisInWindow(image,[nfeatures=100, window = 9, k=0.04, stepguess=0.9, threshold = 1e-4])
-
-Return the n best Harris features in a window
-"""
-
-function getApproxBestHarrisInWindow(iml;nfeatures=100, window = 9, k=0.04, stepguess=0.9,threshold = 1e-4)
-    harris_response = harris(iml)
-
-    maxima = mapwindow(maximum,harris_response,(window,window))
-    window_max = (harris_response .== maxima).*harris_response
-
-    mth = maximum(window_max)
-
-    nfea = 0
-    targnfea = nfeatures
-    ftsl = nothing
-    while nfea < targnfea
-        mth *= stepguess
-        resp = map(i -> i > mth, window_max);
-        ftsl = Features(resp)
-        nfea = length(ftsl)
-        if mth < threshold break end
-    end
-    return ftsl[1: min(nfeatures, nfea)]
-end
-
-
+############ This already exist in common
+# ############
+# """
+#     getApproxBestHarrisInWindow(image,[nfeatures=100, window = 9, k=0.04, stepguess=0.9, threshold = 1e-4])
+#
+# Return the n best Harris features in a window
+# """
+# 
+# function getApproxBestHarrisInWindow(iml;nfeatures=100, window = 9, k=0.04, stepguess=0.9,threshold = 1e-4)
+#     harris_response = harris(iml)
+#
+#     maxima = mapwindow(maximum,harris_response,(window,window))
+#     window_max = (harris_response .== maxima).*harris_response
+#
+#     mth = maximum(window_max)
+#
+#     nfea = 0
+#     targnfea = nfeatures
+#     ftsl = nothing
+#     while nfea < targnfea
+#         mth *= stepguess
+#         resp = map(i -> i > mth, window_max);
+#         ftsl = Features(resp)
+#         nfea = length(ftsl)
+#         if mth < threshold break end
+#     end
+#     return ftsl[1: min(nfeatures, nfea)]
+# end
+#
+#
 ##
