@@ -374,8 +374,8 @@ function warping!(Iout,Iin,x,y,M)
     # Affine transformation function (Rotation, Translation, Resize)
     # Calculate the Transformed coordinates
 
-    Tlocalx =  M[1,1] * x + M[1,2] *y + M[1,3]
-    Tlocaly =  M[2,1] * x + M[2,2] *y + M[2,3]
+    Tlocalx =  M[1,1] .* x .+ M[1,2] .*y .+ M[1,3]
+    Tlocaly =  M[2,1] .* x .+ M[2,2] .*y .+ M[2,3]
 
     #Iout  = interp2(Iin, Tlocalx, Tlocaly,'*linear');
     # All the neighborh pixels involved in linear interpolation.
