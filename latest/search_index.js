@@ -149,7 +149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "KLT Feature Tracking",
     "category": "section",
-    "text": "Forward KLT tracking with pyramidsImageTrackerSetup\ntrackOneFeature\nKTL_Tracker!\ntrackOneFeaturePyramid\nwarpping!"
+    "text": "Forward and Inverse KLT tracking with pyramidsImageTrackerSetup\nfillNewImageTemplates!\nKTL_Tracker!\ntrackOneFeatureInversePyramid\ntrackOneFeatureInverse\ntrackOneFeaturePyramid\ntrackOneFeature\nwarping!"
 },
 
 {
