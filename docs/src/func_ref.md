@@ -22,13 +22,16 @@ block_tracker!
 ```
 
 ### KLT Feature Tracking
-Forward KLT tracking with pyramids
+Forward and Inverse KLT tracking with pyramids
 ```@docs
 ImageTrackerSetup
-trackOneFeature
+fillNewImageTemplates!
 KTL_Tracker!
+trackOneFeatureInversePyramid
+trackOneFeatureInverse
 trackOneFeaturePyramid
-warpping!
+trackOneFeature
+warping!
 ```
 
 ### Camera Models and Geometry

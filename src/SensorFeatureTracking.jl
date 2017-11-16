@@ -50,10 +50,14 @@ export
 
   # Tracking Algorithms
   ImageTrackerSetup,
+  fillNewImageTemplates!,
+  testedges,
   KTL_Tracker!,
+  trackOneFeatureInversePyramid,
+  trackOneFeatureInverse,
   trackOneFeaturePyramid,
   trackOneFeature,
-  warpping!
+  warping!
 
 
 include("Common.jl")
