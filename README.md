@@ -29,3 +29,8 @@ Basic unit tests are currently under development in the `test` folder. Unit test
 ```julia
 Pkg.test("SensorFeatureTracking")
 ```
+
+# Contributors
+
+This package uses several dependencies (thank you) and put together by:
+A. Hattingh, J. Terblanche, D. Fourie
