@@ -87,7 +87,7 @@ end
 
 Return the n best Harris features in a window
 """
-function getApproxBestHarrisInWindow(iml;nfeatures=100, window = 9, k=0.04, stepguess=0.9,threshold = 1e-4)
+function getApproxBestHarrisInWindow(iml;nfeatures=100, window = 9, k=0.04, stepguess=0.9,threshold = 0.0)
     harris_response = harris(iml)
 
     maxima = mapwindow(maximum,harris_response,(window,window))
@@ -113,23 +113,36 @@ end
 
 Return the n aproxamate best Shi Tomasi features in a window
 """
-function getApproxBestShiTomasi(iml; nfeatures=100, window = 9, k=0.04, stepguess=0.9, threshold = 1e-4)
-    shi_tomasi_response = shi_tomasi(iml);
+function getApproxBestShiTomasi(iml; nfeatures=100, window = 9, k=0.04, stepguess=0.7, threshold = 1e-4)
+    shi_tomasi_response = shi_tomasi(iml)
 
-    maxima = mapwindow(maximum,shi_tomasi_response,(window,window))
-    window_max = (shi_tomasi_response .== maxima).*shi_tomasi_response
+    # maxima = mapwindow(maximum,shi_tomasi_response,(window,window))
+    #the mapwindow extrema function is faster, but returns a tuple, the map slows it down again
+    maxima = map(tu -> tu[2], mapwindow(extrema,shi_tomasi_response,(window,window)))
 
-    mth = maximum(window_max)
+    shi_tomasi_response .*= (shi_tomasi_response .== maxima)# .& (shi_tomasi_response .> threshold)
+
+    mth = maximum(shi_tomasi_response)
 
     nfea = 0
     targnfea = nfeatures
     ftsl = nothing
+    resp = zeros(Bool,size(iml))
     while nfea < targnfea
         mth *= stepguess
-        resp = map(i -> i > mth, window_max);
-        ftsl = Features(resp)
-        nfea = length(ftsl)
-        if mth < threshold break end
+        resp .= shi_tomasi_response .> mth  #map(i -> i > mth, shi_tomasi_response);
+        # ftsl = Keypoints(resp)
+        nfea = length(find(resp))
+        if nfea >= targnfea
+            # ftsl = Keypoints(resp)
+            return Keypoints(resp)[1:nfeatures]
+            break
+        end
+        if mth < threshold
+            # ftsl = Keypoints(resp)
+            return Keypoints(resp)[1:nfea]
+            break
+        end
     end
-    return ftsl[1: min(nfeatures, nfea)]
+    # return ftsl[1: min(nfeatures, nfea)]
 end

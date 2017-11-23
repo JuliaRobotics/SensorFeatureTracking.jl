@@ -12,7 +12,7 @@ im2 = load(joinpath(datadir,"testSequence/image_$(71).jpg"))
 # feats = getapproxbestharris(im1, 20)
 feats = getApproxBestShiTomasi(im1,nfeatures=1000, stepguess=0.95)
 
-flow = BlockTracker(Keypoints(feats))
+flow = BlockTracker(feats)
 
 #Profile---
 # flwtest = deepcopy(flow)
@@ -52,7 +52,7 @@ im2 = load(joinpath(datadir,"testSequence/image_$(startFrame+1).jpg"))
 (ro,co) = size(im1)
 feats = getApproxBestShiTomasi(im1,nfeatures=200, stepguess=0.95)
 
-flow = BlockTracker(Keypoints(feats), matchFunction = compute_ssd)
+flow = BlockTracker(feats, matchFunction = compute_ssd)
 # grid_features!(flow,co,ro)
 
 image1 = deepcopy(im1)
