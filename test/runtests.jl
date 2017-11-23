@@ -4,21 +4,30 @@ using Base: Test
 
 
 @testset begin
+
+  # Test HornAbsoluteOrientation
   TU = TransformUtils
 
   aQb = convert(Quaternion, so3(randn(3)))
 
   bX = randn(10,3)
   aX = zeros(size(bX))
+  aV = Vector{Vector{Float64}}(10)
+  bV = Vector{Vector{Float64}}(10)
 
   for i in 1:size(bX,1)
     aX[i,:] = TU.rotate(aQb, bX[i,:])
+
+    bV[i] = bX[i,:]
   end
 
-  est_aQb = HornAbsoluteOrientation(aX, bX)
+  aV = TU.rotate.(aQb, bV)
 
+  est_aQb = HornAbsoluteOrientation(aX, bX)
   @test compare(est_aQb, aQb)
 
+  est_aQb = HornAbsoluteOrientation(aV, bV)
+  @test compare(est_aQb, aQb)
 
   # Test integrateGyroBetweenFrames!
   index = PInt64(1)
@@ -34,24 +43,69 @@ using Base: Test
            0.02       0.99975     0.01;
           -0.01      -0.01        0.9999]
 
-  @test R ≈ Rref atol=0.001
+  @test R ≈ Rref atol=0.001
 
 
 
-  # Test estimateRotationFromKeypoints
+  # Test estimateRotationFromKeypoints and predictHomographyIMU with fixed rotations
   focald = 520.0
   cu = 320.0
   cv = 240.0
   cam = CameraModel(640,480,[focald, focald],[cv, cu], 0., [0])
 
+
+  # test rotation
   points_a = Keypoints()
-  # push!(points_a, CartesianIndex(319,239), CartesianIndex(321,239), CartesianIndex(321,241),  CartesianIndex(319,241))
   push!(points_a, CartesianIndex(239,319), CartesianIndex(239,321), CartesianIndex(241,321),  CartesianIndex(241,319))
   points_b = Keypoints()
   push!(points_b, CartesianIndex(239,321), CartesianIndex(241,321),  CartesianIndex(241,319), CartesianIndex(239,319))
   # there must be at least 4 valid keypoints to track
-  q = estimateRotationFromKeypoints(points_a,points_b, cam, compensate = true)
+  aQb = estimateRotationFromKeypoints(points_a, points_b, cam, compensate = true)
   qref = convert(Quaternion, Euler(0.,0.,pi/2.))
-  @test compare(q, qref, tol = 1e-4)
+  @test compare(aQb, qref, tol = 1e-6)
+
+  # map point b back to a
+  H = SensorFeatureTracking.predictHomographyIMU(0., 0., pi/2., cam.K, cam.Ki)
+  affinity = predictAffinity(H)
+  affinity_halppi = deepcopy(affinity)# copy for later
+  points_a_calc = affinity.(map(x -> [x[1];x[2]], points_b))
+  bools = (map((a,b) -> a[1] == round(Int,b[1]) && a[2] == round(Int,b[2]), points_a, points_a_calc))
+  @test bools == ones(Bool, 4)
+
+
+
+  # translation also
+  points_a = Keypoints()
+  push!(points_a, CartesianIndex(239,319), CartesianIndex(239,321), CartesianIndex(241,321),  CartesianIndex(241,319))
+  points_b = Keypoints()
+  push!(points_b, CartesianIndex(239,320), CartesianIndex(239,322), CartesianIndex(241,322),  CartesianIndex(241,320))
+  # there must be at least 4 valid keypoints to track
+  aQb = estimateRotationFromKeypoints(points_a, points_b, cam, compensate = true)
+  qref = convert(Quaternion, Euler(1.923e-3,0.,0.))
+  @test compare(aQb, qref, tol = 1e-6)
+
+  # map point b back to a
+  H = SensorFeatureTracking.predictHomographyIMU(1.923e-3, 0., 0., cam.K, cam.Ki)
+  affinity = predictAffinity(H)
+  points_a_calc = affinity.(map(x -> [x[1];x[2]], points_b))
+  bools = (map((a,b) -> a[1] == round(Int,b[1]) && a[2] == round(Int,b[2]), points_a, points_a_calc))
+  @test bools == ones(Bool, 4)
+
+
+  # test predictHomographyIMU!
+  index = PInt64(1)
+  imudata = Vector{IMU_DATA}()
+
+  push!(imudata, IMU_DATA(Int64(0),[0.0, 0.0, 0.0],[0.0, 0.0, 0.0]))
+  for time = 10000:10000:1000000
+    push!(imudata, IMU_DATA(time,[0.0, 0.0, 0.0],[0., 0.0, pi/2]))
+  end
+
+  index = PInt64(1)
+  valid, H = predictHomographyIMU!(index, 1000000, imudata, cam.K, cam.Ki; cRi = eye(3))
+
+  affinity = predictAffinity(H)
+  @test affinity_halppi.m ≈ affinity.m atol=1e-6
+  @test affinity_halppi.v ≈ affinity.v atol=1e-6
 
 end

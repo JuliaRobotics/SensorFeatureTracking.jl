@@ -255,7 +255,7 @@ function predictHomographyIMU!(index::PInt64, ctime::Int64, imudata::Vector{IMU_
 	#increment index to start at 2 for integration, ignore first
     (index.i < 2)? index.i+=1:nothing
 
-	while (index.i < n) && (imudata[index.i].utime  < ctime)
+	while (index.i <= n) && (imudata[index.i].utime  <= ctime)
 
 		dt = Float64(imudata[index.i].utime - imudata[index.i-1].utime)/1e6
 
@@ -264,7 +264,7 @@ function predictHomographyIMU!(index::PInt64, ctime::Int64, imudata::Vector{IMU_
 		# println("@$(index.i) : $(cR)")
 		index.i += 1
 	end
-
+    
 	#compute homography
 	# H = K*R*inv(K)
     R4 = eye(4)

@@ -24,9 +24,8 @@ Draw a + on a feature.
 julia> map(ft->drawfeatureX!(image, ft, length=5),features)
 ```
 """
-function drawfeatureX!(im, ift::Feature; length = 2)
+function drawfeatureX!(im, pt::Keypoint; length = 2)
     h,w = size(im)
-    pt = Keypoint(ift)
     boundr = 2
     checkboun = (length < pt[2] < w-length) && (length < pt[1] < h-length)
     # rad = T ? radius : 0
@@ -35,6 +34,8 @@ function drawfeatureX!(im, ift::Feature; length = 2)
       draw!(im, LineSegment( pt- CartesianIndex(length,0), pt + CartesianIndex(length,0)))
     end
 end
+
+drawfeatureX!(im, ift::Feature; length = 2) = drawfeatureX!(im, Keypoint(ift), length = length)
 
 
 """
