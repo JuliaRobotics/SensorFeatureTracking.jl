@@ -274,6 +274,7 @@ function predictHomographyIMU!(index::PInt64, ctime::Int64, imudata::Vector{IMU_
     K4[1:2,4] = K[1:2,3]
     H = K4*R4*inv(K4)
 # H./H[3,3] ??
+    # H[:] ./= H[3,3]
 	return (true, H);
 end
 

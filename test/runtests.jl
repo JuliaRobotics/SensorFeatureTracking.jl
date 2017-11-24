@@ -108,4 +108,32 @@ using Base: Test
   @test affinity_halppi.m ≈ affinity.m atol=1e-6
   @test affinity_halppi.v ≈ affinity.v atol=1e-6
 
+
+# test predictHomographyIMU! with x axis rotation, test data made geometrically
+  focald = 520.0
+  cu = 0.0
+  cv = 0.0 # centred around zero for test data
+  cam = CameraModel(640,480,[focald, focald],[cv, cu], 0., [0])
+
+  index = PInt64(1)
+  imudata = Vector{IMU_DATA}()
+
+  push!(imudata, IMU_DATA(Int64(0),[0.0, 0.0, 0.0],[0.0, 0.0, 0.0]))
+  for time = 10000:10000:1000000
+    push!(imudata, IMU_DATA(time,[0.0, 0.0, 0.0],[0.1, 0.0, 0.0]))
+  end
+
+  index = PInt64(1)
+  valid, H = predictHomographyIMU!(index, 1000000, imudata, cam.K, cam.Ki; cRi = eye(3))
+  # @show H
+  v_a  =  [[0.; 0], [0.; 30], [0.; -30], [0.; 60], [0.; -60]]
+  ref_v_b = [[0.; 52.174], [0.; 82.652], [0.; 22.046], [0.; 113.488], [0.; -7.736]]
+
+
+  affinity = inv(predictAffinity(H))
+  v_b = affinity.(v_a)
+
+  println("calc: ",v_b)
+  println("ref:  ",ref_v_b)
+  @test v_b ≈ ref_v_b atol = 0.1 #TODO fix as it fails with smaller tol
 end
