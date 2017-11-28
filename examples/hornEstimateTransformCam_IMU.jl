@@ -54,7 +54,7 @@ im2 = load(joinpath(datadir,"testSequence/image_$(startFrame+1).jpg"))
 (ro,co) = size(im1)
 feats = getApproxBestShiTomasi(im1,nfeatures=100, stepguess=0.95)
 
-flow = BlockTracker(Keypoints(feats), matchFunction = compute_ssd)#flow_value_threshold = 50000
+flow = BlockTracker(feats, matchFunction = compute_ssd)#flow_value_threshold = 50000
 
 image1 = deepcopy(im1)
 oldfeats = deepcopy(flow.features)

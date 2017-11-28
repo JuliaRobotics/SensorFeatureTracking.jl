@@ -5,8 +5,8 @@ Data structure for a Camera model with parameters.
 Use `CameraModel(width,height,fc,cc,skew,kc)` for easy construction.
 """
 struct CameraModelandParameters
-    width::Integer		# image width
-    height::Integer		# image height
+    width::Int		# image width
+    height::Int		# image height
     fc::Vector{Float64}	# focal length in x and y
     cc::Vector{Float64}	# camera center
     skew::Float64	    # skew value
@@ -255,7 +255,7 @@ function predictHomographyIMU!(index::PInt64, ctime::Int64, imudata::Vector{IMU_
 	#increment index to start at 2 for integration, ignore first
     (index.i < 2)? index.i+=1:nothing
 
-	while (index.i < n) && (imudata[index.i].utime  < ctime)
+	while (index.i <= n) && (imudata[index.i].utime  <= ctime)
 
 		dt = Float64(imudata[index.i].utime - imudata[index.i-1].utime)/1e6
 
@@ -274,6 +274,7 @@ function predictHomographyIMU!(index::PInt64, ctime::Int64, imudata::Vector{IMU_
     K4[1:2,4] = K[1:2,3]
     H = K4*R4*inv(K4)
 # H./H[3,3] ??
+    # H[:] ./= H[3,3]
 	return (true, H);
 end
 

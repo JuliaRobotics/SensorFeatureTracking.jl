@@ -60,9 +60,15 @@ fx = 524.040
 	cx = 251.227
 	cam = CameraModel(640,480,[fx, fy],[cx, cy], 0., [0])
 # this was calculated using HornAbsoluteOrientation, see hornEstimateTransformCam_IMU example
+# iQc = Quaternion()
+# 	iQc.s = 0.620782
+# 	iQc.v = [-0.26786, 0.454148, 0.580198]
+# 	iRc = convert(SO3,iQc).R
+# 	cRi = iRc'
+
 iQc = Quaternion()
-	iQc.s = 0.620782
-	iQc.v = [-0.26786, 0.454148, 0.580198]
+	iQc.s = 0.6475888324459562
+	iQc.v = [-0.261166, 0.533419, 0.477373]
 	iRc = convert(SO3,iQc).R
 	cRi = iRc'
 
@@ -100,7 +106,7 @@ im2 = load("../Data/testSequence/image_$(startFrame+1).jpg")
 (ro,co) = size(im1)
 feats = getApproxBestShiTomasi(im1,nfeatures=200, stepguess=0.95)
 
-flow = BlockTracker(Keypoints(feats), search_size = 5, matchFunction = compute_ssd)
+flow = BlockTracker(feats, search_size = 5, matchFunction = compute_ssd)
 # grid_features!(flow,co,ro)
 
 image1 = deepcopy(im1)
