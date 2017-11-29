@@ -1,12 +1,12 @@
 # using ImageFeatures, Images
 struct BlockTracker
-	search_size::Int64
-	flow_feature_threshold::Int64
-	flow_value_threshold::Int64
+	search_size::Int
+	flow_feature_threshold::Int
+	flow_value_threshold::Int
 	features::Keypoints
 	"Function used for block matching (compute_sad, compute_ssd, compute_ncc)"
 	matchFunction::Function
-	REGION_SIZE::Int64 # this is used as a constant for implimentation of BlockTracker and should not be changed
+	REGION_SIZE::Int # this is used as a constant for implimentation of BlockTracker and should not be changed
 	BlockTracker() = new()
 	BlockTracker(search_size,flow_feature_threshold,flow_value_threshold,keypoints,matchFunction,REGION_SIZE) = new(search_size,flow_feature_threshold,flow_value_threshold,keypoints,matchFunction,REGION_SIZE)
 end
@@ -34,7 +34,7 @@ function compute_sad(image1, image2, off1X::T, off1Y::T, off2X::T, off2Y::T, REG
 	im1_r = view(image1,off1X:off1X+REGION_SIZE-1,off1Y:off1Y+REGION_SIZE-1)
 	im2_r = view(image2,off2X:off2X+REGION_SIZE-1,off2Y:off2Y+REGION_SIZE-1)
 
-	acc = sum(abs.(im1_r - im2_r))
+	acc = sum(abs.(im1_r .- im2_r))
 
 	return acc;
 end
@@ -50,7 +50,7 @@ function compute_ssd(image1, image2, off1X::T, off1Y::T, off2X::T, off2Y::T, REG
 	im1_r = view(image1,off1X:off1X+REGION_SIZE-1,off1Y:off1Y+REGION_SIZE-1)
 	im2_r = view(image2,off2X:off2X+REGION_SIZE-1,off2Y:off2Y+REGION_SIZE-1)
 
-	acc = sum((im1_r - im2_r).^2)
+	acc = sum((im1_r .- im2_r).^2)
 
 	return acc;
 end
