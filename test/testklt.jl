@@ -9,7 +9,7 @@ cd(dirname(@__FILE__))
 include("../src/KLTTracker.jl")
 
 
-@testset "blockMatchingFlow" begin
+@testset "KLTTracker" begin
     drawon = false
     range = -25:25
     rangein = -20:20
@@ -85,7 +85,15 @@ include("../src/KLTTracker.jl")
         n_img = reinterpret(Gray{N0f8},n_img)
         colorview(RGB, r_img, n_img, n_img)
     end
-    ##
+    #
 
-    @test kpoints == map((ft) -> CartesianIndex(round.(Int,ft.affinity.v[1:2])...), tracker.features )
+    kltfeatarr = map((ft) -> [ft.affinity.v[1:2]...], tracker.features )
+    reffeatarr = map((ft) -> [Float32(ft[1]), Float32(ft[2])], kpoints )
+    @show kltfeatarr
+    @show reffeatarr
+
+    @test kltfeatarr ≈ reffeatarr
+
 end
+
+##
