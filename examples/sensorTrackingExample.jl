@@ -33,8 +33,8 @@ function padandcutoffsetImg(img, ro, co)
 	co_start =  max(indices(img)[2].start, 1)
 	co_stop  = 	min(indices(img)[2].stop, co)
 
-	return blankImg[ro_start:ro_stop,co_start:co_stop] = img[ro_start:ro_stop,co_start:co_stop]
-
+	blankImg[ro_start:ro_stop,co_start:co_stop] = img[ro_start:ro_stop,co_start:co_stop]
+	return blankImg
 end
 
 ## Extract example data

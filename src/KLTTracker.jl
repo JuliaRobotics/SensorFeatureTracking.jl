@@ -111,12 +111,13 @@ function (tracker::KLTTracker)(img) #template, p_init, n_iters)
 			# 6) Hessian  inverse
 			H_inv = feat.invhessian
 
+			IWxp = nothing
 			# Baker-Matthews, Inverse Compositional Algorithm -------------------------
 			for counter = 1:maxIterations
 				# 1) Warp image
 				# warp_p_am = AffineMap(SMatrix{2,2}(warp_p[1:2,1:2]), SVector{2}(warp_p[:,3]))
 
-				if twidth < warp_p_am.v[1] > (rows-twidth)  || twidth*2 < warp_p_am.v[2] > (cols-twidth) || isnan(warp_p_am.v[1])
+				if !(twidth < warp_p_am.v[1] < (rows-twidth))  || !(twidth*2 < warp_p_am.v[2] < (cols-twidth)) || isnan(warp_p_am.v[1])
 					printDebug && println("out of frame on warp feature: $f_inx ", warp_p_am)
 					tracker.features[f_inx].valid[1] = false #trow away
 					invalidcounter +=1
@@ -124,7 +125,16 @@ function (tracker::KLTTracker)(img) #template, p_init, n_iters)
 					break;
 				end
 
-				IWxp = view(warpedview(img, warp_p_am),-hwidth:hwidth,-hwidth:hwidth)
+				try
+					IWxp = view(warpedview(img, warp_p_am, 0.0),-hwidth:hwidth,-hwidth:hwidth)
+				catch
+					printDebug && println("out of frame after warp: $f_inx ", warp_p_am)
+					tracker.features[f_inx].valid[1] = false #trow away
+					invalidcounter +=1
+					tracker.validCounts[f_inx] = 0
+					break;
+				end
+				# IWxp = view(warpedview(img, warp_p_am), -hwidth:hwidth,-hwidth:hwidth)
 
 				# 2) Compute the error image
 				error_img .= IWxp .- template

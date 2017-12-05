@@ -147,3 +147,21 @@ function getApproxBestShiTomasi(iml; nfeatures=100, window = 9, k=0.04, stepgues
     end
     # return ftsl[1: min(nfeatures, nfea)]
 end
+
+
+"""
+    padandcutoffsetImg(img, ro, co)
+
+"""
+function padandcutoffsetImg(img, ro, co)
+	blankImg = zeros(typeof(img[1]),ro,co)
+
+	ro_start =  max(indices(img)[1].start, 1)
+	ro_stop  = 	min(indices(img)[1].stop, ro)
+
+	co_start =  max(indices(img)[2].start, 1)
+	co_stop  = 	min(indices(img)[2].stop, co)
+
+	blankImg[ro_start:ro_stop,co_start:co_stop] = img[ro_start:ro_stop,co_start:co_stop]
+	return blankImg
+end
