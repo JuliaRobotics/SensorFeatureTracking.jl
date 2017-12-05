@@ -71,7 +71,7 @@ function (tracker::KLTTracker)(img) #template, p_init, n_iters)
 	const rows = size(img, 1)
     const cols = size(img, 2)
 	const windowSize = tracker.window_size
-	const printDebug = false
+	const printDebug = true
 
 	error_img = zeros(windowSize*2+1, windowSize*2+1)
 	sd_delta_p = zeros(N_p, 1)
@@ -117,8 +117,8 @@ function (tracker::KLTTracker)(img) #template, p_init, n_iters)
 				# 1) Warp image
 				# warp_p_am = AffineMap(SMatrix{2,2}(warp_p[1:2,1:2]), SVector{2}(warp_p[:,3]))
 
-				if !(twidth < warp_p_am.v[1] < (rows-twidth))  || !(twidth*2 < warp_p_am.v[2] < (cols-twidth)) || isnan(warp_p_am.v[1])
-					printDebug && println("out of frame on warp feature: $f_inx ", warp_p_am)
+				if !(hwidth < warp_p_am.v[1] < (rows-hwidth))  || !(hwidth < warp_p_am.v[2] < (cols-hwidth)) || isnan(warp_p_am.v[1])
+					printDebug && println("out of frame on feature: $f_inx ", warp_p_am)
 					tracker.features[f_inx].valid[1] = false #trow away
 					invalidcounter +=1
 					tracker.validCounts[f_inx] = 0
