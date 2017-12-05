@@ -1,12 +1,11 @@
 
 struct KLTFeature
     valid::Vector{Bool}
-    keypoint::CartesianIndex{2} #TODO Remove or update, this is just a waste of space currently
     affinity::AffineMap
     template::Array{Gray{N0f8}}
     xgrad::Array{Float32,2}
     ygrad::Array{Float32,2}
-    jacobian::Array{Float32,2}
+    #jacobian::Array{Float32,2}#TODO move out to KLTTracker since it only depends on width anb number of vars
     steepest::Array{Float32,2}
     invhessian::Array{Float32,2}
 end
@@ -26,22 +25,20 @@ function KLTFeature(img, keypoint, w = 10)
 		H_inv = inv(H)
 
 		return KLTFeature(	Vector([true]),
-							keypoint,
 							AffineMap(MMatrix{2,2}(eye(2)), MVector{2,Float32}(keypoint.I)),
 							template,
 							Txgrad,
 							Tygrad,
-							dW_dp,
+							# dW_dp,
 							VT_dW_dp,
 							H_inv)
 	else
 		return KLTFeature(	Vector([false]),
-							CartesianIndex(0,0),
 							AffineMap(MMatrix{2,2}(eye(2)), MVector{2,Float32}([0.,0])),
 							zeros(w*2+1,w*2+1),
 							zeros(w*2+1,w*2+1),
 							zeros(w*2+1,w*2+1),
-							zeros(w*2+1,w*2+1),
+							# zeros(w*2+1,w*2+1),
 							zeros(w*2+1,w*2+1),
 							zeros(w*2+1,w*2+1))
 	end
@@ -56,12 +53,13 @@ struct KLTTracker
 	image_width::Int
 	window_size::Int
 	threshold::Float32#Threshold = 0.05;
+	jacobian::Array{Float32,2}
 	features::KLTFeatures
 	validCounts::Vector{Int}
 end
 
 
-KLTTracker(image::Matrix{T}, window_size::Int, threshold::Float32, kpoints::Array{CartesianIndex{2},1}) where T = KLTTracker(size(image,1),size(image,2), window_size, threshold, map( kp -> KLTFeature(image, kp, window_size), kpoints), zeros(Int, size(kpoints)))
+KLTTracker(image::Matrix{T}, window_size::Int, threshold::Float32, kpoints::Array{CartesianIndex{2},1}) where T = KLTTracker(size(image,1),size(image,2), window_size, threshold, jacobian(window_size*2+1), map( kp -> KLTFeature(image, kp, window_size), kpoints), zeros(Int, size(kpoints)))
 
 ##
 
@@ -103,7 +101,7 @@ function (tracker::KLTTracker)(img) #template, p_init, n_iters)
 			Ty_grad = feat.ygrad
 
 			# 4) Jacobian
-			dW_dp = feat.jacobian
+			dW_dp = tracker.jacobian
 
 			# 5)steepest descent images, VT_dW_dp
 			VT_dW_dp = feat.steepest
