@@ -152,6 +152,7 @@ end
 """
     padandcutoffsetImg(img, ro, co)
 
+Pad and/or cut the image filling with zeros
 """
 function padandcutoffsetImg(img, ro, co)
 	blankImg = zeros(typeof(img[1]),ro,co)
