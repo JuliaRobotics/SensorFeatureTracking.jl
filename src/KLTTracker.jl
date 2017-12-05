@@ -14,7 +14,7 @@ end
 function KLTFeature(img, keypoint, w = 10)
 
 	N_p = 6
-	(ro,co) = size(im1)
+	(ro,co) = size(img)
 
 	#check if too close to edge
 	if w < keypoint[1] < (ro - w) && w < keypoint[2] < (co - w)
@@ -68,8 +68,8 @@ KLTTracker(image::Matrix{T}, window_size::Int, threshold::Float32, kpoints::Arra
 function (tracker::KLTTracker)(img) #template, p_init, n_iters)
 	const N_p = 6
 	const maxIterations = 50
-	const rows = size(im1, 1)
-    const cols = size(im1, 2)
+	const rows = size(img, 1)
+    const cols = size(img, 2)
 	const windowSize = tracker.window_size
 	const printDebug = false
 
