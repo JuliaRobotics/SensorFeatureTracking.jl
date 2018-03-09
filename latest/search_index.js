@@ -68,7 +68,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.drawfeatureLine!",
     "page": "Functions",
     "title": "SensorFeatureTracking.drawfeatureLine!",
-    "category": "Function",
+    "category": "function",
     "text": "drawfeatureLine!(image,feature1, feature2)\n\nDraw a line between 2 features.\n\n\n\n"
 },
 
@@ -76,7 +76,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.drawfeatureX!",
     "page": "Functions",
     "title": "SensorFeatureTracking.drawfeatureX!",
-    "category": "Function",
+    "category": "function",
     "text": "drawfeatureX!(image,feature [,crosslength = 2])\n\nDraw a + on a feature.\n\nExamples\n\njulia> map(ft->drawfeatureX!(image, ft, length=5),features)\n\n\n\n"
 },
 
@@ -84,7 +84,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.getApproxBestHarrisInWindow",
     "page": "Functions",
     "title": "SensorFeatureTracking.getApproxBestHarrisInWindow",
-    "category": "Function",
+    "category": "function",
     "text": "getApproxBestHarrisInWindow(image,[n=100, windowSize = 9, k=0.04, stepguess=0.4])\n\nReturn the n best Harris features in a window\n\n\n\n"
 },
 
@@ -92,7 +92,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.getApproxBestShiTomasi",
     "page": "Functions",
     "title": "SensorFeatureTracking.getApproxBestShiTomasi",
-    "category": "Function",
+    "category": "function",
     "text": "getApproxBestShiTomasi(image,[n=100, windowSize = 9, k=0.04, stepguess=0.4, threshold = 1e-4])\n\nReturn the n aproxamate best Shi Tomasi features in a window\n\n\n\n"
 },
 
@@ -108,7 +108,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.compute_sad",
     "page": "Functions",
     "title": "SensorFeatureTracking.compute_sad",
-    "category": "Function",
+    "category": "function",
     "text": "compute_sad(image1, image2, off1X, off1Y, off2X, off2Y, REGION_SIZE)\n\nCompute Sum of Absolute Differences of two regions with size REGION_SIZE.\n\n\n\n"
 },
 
@@ -116,7 +116,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.compute_ssd",
     "page": "Functions",
     "title": "SensorFeatureTracking.compute_ssd",
-    "category": "Function",
+    "category": "function",
     "text": "compute_ssd(image1, image2, off1X, off1Y, off2X, off2Y, REGION_SIZE)\n\nCompute Sum of Squared Differences of two regions with REGION_SIZE.\n\n\n\n"
 },
 
@@ -124,7 +124,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.compute_ncc",
     "page": "Functions",
     "title": "SensorFeatureTracking.compute_ncc",
-    "category": "Function",
+    "category": "function",
     "text": "compute_ncc(image1, image2, off1X, off1Y, off2X, off2Y, REGION_SIZE)\n\nCompute the normalized cross-correlation of two regions with size REGION_SIZE.\n\n\n\n"
 },
 
@@ -132,7 +132,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.block_tracker!",
     "page": "Functions",
     "title": "SensorFeatureTracking.block_tracker!",
-    "category": "Function",
+    "category": "function",
     "text": "block_tracker(tracker::BlockTracker, image1, image2)\n\nTrack features between two images.\n\n\n\n"
 },
 
@@ -156,7 +156,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.CameraModelandParameters",
     "page": "Functions",
     "title": "SensorFeatureTracking.CameraModelandParameters",
-    "category": "Type",
+    "category": "type",
     "text": "Data structure for a Camera model with parameters. Use CameraModel(width,height,fc,cc,skew,kc) for easy construction.\n\n\n\n"
 },
 
@@ -164,7 +164,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.CameraModel",
     "page": "Functions",
     "title": "SensorFeatureTracking.CameraModel",
-    "category": "Function",
+    "category": "function",
     "text": "CameraModel(width,height,fc,cc,skew,kc)\n\nConstructor helper for creating a camera model.\n\n\n\n"
 },
 
@@ -180,7 +180,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.IMU_DATA",
     "page": "Functions",
     "title": "SensorFeatureTracking.IMU_DATA",
-    "category": "Type",
+    "category": "type",
     "text": "Data structure for holding time, gyroscope, and accelerometer data.\n\nFields\n\nutime – time [μs]\nacc   – accelerometer data\ngyro  – gyroscope data\n\n\n\n"
 },
 
@@ -188,7 +188,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.estimateRotationFromKeypoints",
     "page": "Functions",
     "title": "SensorFeatureTracking.estimateRotationFromKeypoints",
-    "category": "Function",
+    "category": "function",
     "text": "estimateRotationFromKeypoints(points_a, points_b, cameraModel, [compensate = false])\n\nEstimate the rotation between 2 sets of Keypoints a and b using HornAbsoluteOrientation.\nIt is assumed that only possitive Keypoints are valid.\nSet compensate to true if rotaion should be around centre off image rather than 0,0\n\n\n\n"
 },
 
@@ -196,7 +196,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.predictHomographyIMU!",
     "page": "Functions",
     "title": "SensorFeatureTracking.predictHomographyIMU!",
-    "category": "Function",
+    "category": "function",
     "text": "predictHomographyIMU!(index, current_time, vector_data, CameraK, CameraK_inverse)\n\nEstimate camera rotation from IMU data and compute predicted homography\n\n\n\n"
 },
 
@@ -204,7 +204,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.integrateGyroBetweenFrames!",
     "page": "Functions",
     "title": "SensorFeatureTracking.integrateGyroBetweenFrames!",
-    "category": "Function",
+    "category": "function",
     "text": "integrateGyroBetweenFrames!(index, current_time, vector_data)\n\nEstimate rotations from IMU data between time stamps.\n\n\n\n"
 },
 
@@ -212,7 +212,7 @@ var documenterSearchIndex = {"docs": [
     "location": "func_ref.html#SensorFeatureTracking.HornAbsoluteOrientation",
     "page": "Functions",
     "title": "SensorFeatureTracking.HornAbsoluteOrientation",
-    "category": "Function",
+    "category": "function",
     "text": "HornAbsoluteOrientation(a::Matrix{Float64},b::Matrix{Float64})\nHornAbsoluteOrientation(a::Vector{Vector{Float64}},b::Vector{Vector{Float64}})\n\nCompute the rotation between rows of (a and b)::Array{Float64,2}.\nRotate b into the frame of a\nReturns a quaternion, aQb\n\n\n\n"
 },
 
