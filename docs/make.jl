@@ -13,7 +13,7 @@ makedocs(
 
 
 deploydocs(
-    repo   = "github.com/dehann/SensorFeatureTracking.jl.git",
+    repo   = "github.com/JuliaRobotics/SensorFeatureTracking.jl.git",
     target = "build",
     deps   = nothing,
     make   = nothing,
@@ -26,6 +26,6 @@ deploydocs(
 
 # deploydocs(
 #     deps   = Deps.pip("mkdocs", "python-markdown-math", "mkdocs-material"),
-#     repo   = "github.com/dehann/SensorFeatureTracking.jl.git",
+#     repo   = "github.com/JuliaRobotics/SensorFeatureTracking.jl.git",
 #     julia  = "release",
 # )

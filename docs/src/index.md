@@ -20,7 +20,7 @@ This is an unregistered Julia package, but can be readily installed from a Julia
 Pkg.clone("https://github.com/<YOURFORKEDREPO>/SensorFeatureTracking.jl.git")
 ```
 
-Upstream master is at: `https://github.com/dehann/SensorFeatureTracking.jl.git`
+Upstream master is at: `https://github.com/JuliaRobotics/SensorFeatureTracking.jl.git`
 
 
 ## Examples
