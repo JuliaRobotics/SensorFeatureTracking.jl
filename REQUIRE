@@ -11,5 +11,5 @@ CoordinateTransformations
 StaticArrays
 Rotations
 
-Gtk
+#Gtk
 #RecursiveFiltering
