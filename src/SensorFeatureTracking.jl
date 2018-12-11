@@ -2,6 +2,7 @@ module SensorFeatureTracking
 
 using Images, ImageView, ImageDraw, ImageFeatures, Gtk.ShortNames, VideoIO, ImageFiltering
 using TransformUtils, CoordinateTransformations, StaticArrays
+using LinearAlgebra
 
 export
   # new functions written here

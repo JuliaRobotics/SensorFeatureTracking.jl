@@ -133,7 +133,7 @@ function getApproxBestShiTomasi(iml; nfeatures=100, window = 9, k=0.04, stepgues
         mth *= stepguess
         resp .= shi_tomasi_response .> mth  #map(i -> i > mth, shi_tomasi_response);
         # ftsl = Keypoints(resp)
-        nfea = length(find(resp))
+        nfea = length(findall(resp))
         if nfea >= targnfea
             # ftsl = Keypoints(resp)
             return Keypoints(resp)[1:nfeatures]

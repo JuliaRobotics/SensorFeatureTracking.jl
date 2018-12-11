@@ -1,18 +1,19 @@
 using SensorFeatureTracking
-using Base: Test
+using Test
+using LinearAlgebra
 
 @testset "blockMatchingFlow" begin
 ##
 	im1 = zeros(Int32,41,61)
-	im1[16:26,16:26] = 100
-	im1[16:26,36:46] = 200
+	im1[16:26,16:26] .= 100
+	im1[16:26,36:46] .= 200
 
 
 	reffeats = map(CartesianIndex{2}, [(16, 36), (26, 36), (16, 46), (26, 46)])
 
 	im2 = zeros(Int32,41,61)
-	im2[14:24,14:24] = 70
-	im2[18:28,38:48] = 200
+	im2[14:24,14:24] .= 70
+	im2[18:28,38:48] .= 200
 
 	feats = getApproxBestShiTomasi(im1,nfeatures=4, stepguess=0.8)
 	@test feats == reffeats

@@ -17,7 +17,7 @@ BlockTracker(keypoints::Keypoints; search_size = 10, flow_feature_threshold = 10
 function compute_diff(image, offX::T, offY::T, REGION_SIZE::T) where {T<:Integer}
 
 	im_roi = image[offX:offX+REGION_SIZE-1,offY:offY+REGION_SIZE-1]
-	acc = sum(abs.(diff(im_roi,1))) + sum(abs.(diff(im_roi,2)))
+	acc = sum(abs.(diff(im_roi,dims=1))) + sum(abs.(diff(im_roi,dims=2)))
 
 	return acc;
 

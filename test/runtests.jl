@@ -1,5 +1,5 @@
 using SensorFeatureTracking
-using Base: Test
+using Test
 
 
 @testset "SensorFeatureTracking" begin

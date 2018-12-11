@@ -65,19 +65,19 @@ map((ft1,ft2)->drawfeatureLine!(blankImg, Feature(ft1),Feature(ft2)),oldfeats,fl
 
 
 #
-tic()
+
 for frame_idx = startFrame+2:startFrame+numFrames -1
     println("Processing Frame: ", frame_idx)
-    im1 = deepcopy(im2)
-    im2 = load(joinpath(datadir,"testSequence/image_$(frame_idx).jpg"))
+    global im1 = deepcopy(im2)
+    global im2 = load(joinpath(datadir,"testSequence/image_$(frame_idx).jpg"))
 
     # im2 = im2[range...]
     block_tracker!(flow, im1, im2)
 
     map((ft1,ft2)->drawfeatureLine!(blankImg, Feature(ft1),Feature(ft2)),flow.features, oldfeats)
-    oldfeats = deepcopy(flow.features)
+    global oldfeats = deepcopy(flow.features)
 end
-toc()
+
 
 # overlay tracking traces with image
 # o_img = (reinterpret(UInt8,blankImg)) .| (reinterpret(UInt8,im2))

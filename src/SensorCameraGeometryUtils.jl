@@ -62,7 +62,7 @@ function propR!(R::Matrix{Float64}, gyro::Vector{Float64}, dt::Float64)
     #alpha = 0.5*(gyro + datt.dalpha)*dt
     alpha = gyro*dt
     phi = alpha
-    dR = expm(skew(phi))
+    dR = exp(skew(phi))
     R[:] = R * dR
 	return nothing
 end
@@ -89,8 +89,8 @@ function HornAbsoluteOrientation(a::Matrix{Float64},b::Matrix{Float64})
     N = N + linmapR(ri)'*linmapL(li)
   end
 
-  D,v = eig(N);
-  d = diagm(D);
+  D,v = eigen(N)
+  d = diagm(0 => D)
   # maxd = maximum(d);
   # maxind = find(maxd==d);
   maxd, maxind = findmax(D)
@@ -126,8 +126,8 @@ function HornAbsoluteOrientation(a::Vector{Vector{Float64}},b::Vector{Vector{Flo
       return Quaternion()
   end
 
-  D,v = eig(N)
-  d = diagm(D)
+  D,v = eigen(N)
+  d = diagm(0 => D)
   # maxd = maximum(d);
   # maxind = find(maxd==d);
   maxd, maxind = findmax(D)
@@ -182,17 +182,17 @@ Estimate rotations from IMU data between time stamps.
 """
 function integrateGyroBetweenFrames!(index::PInt64, ctime::Int64, imudata::Vector{IMU_DATA})
 
-	R = eye(3)
+	R = Matrix(1.0I, 3, 3)
 
 	n = size(imudata,1)
 
 	#end of imudata
 	if (index.i > n)
- 		return (false, eye(3))
+ 		return (false, Matrix(1.0I, 3, 3))
 	end
 
 	#increment index to start at 2 for integration, ignore first
-    (index.i < 2)? index.i+=1:nothing
+    (index.i < 2) ? index.i+=1 : nothing
 
 	while (index.i <= n) && (imudata[index.i].utime <= ctime)
 
@@ -220,8 +220,8 @@ function estimateRotationFromKeypoints(points_a::Keypoints, points_b::Keypoints,
 
 	focald = cam.fc[1] #assume 1:1 aspect ratio for now TODO
 	#create a Vector of 3d vectors for valid keypoints (ie. not 0) else NaN
-	nps_a = map(kp -> (kp[1] > 0 < kp[2])? [kp[1], kp[2], focald] : [NaN,NaN,NaN], points_a)
-	nps_b = map(kp -> (kp[1] > 0 < kp[2])? [kp[1], kp[2], focald] : [NaN,NaN,NaN], points_b)
+	nps_a = map(kp -> (kp[1] > 0 < kp[2]) ? [kp[1], kp[2], focald] : [NaN,NaN,NaN], points_a)
+	nps_b = map(kp -> (kp[1] > 0 < kp[2]) ? [kp[1], kp[2], focald] : [NaN,NaN,NaN], points_b)
     if compensate
         # compensate offset to centre of camera
         nps_a = map(nps -> nps - [cam.cc; 0.], nps_a)
@@ -241,19 +241,19 @@ end
 
 Estimate camera rotation from IMU data and compute predicted homography
 """
-function predictHomographyIMU!(index::PInt64, ctime::Int64, imudata::Vector{IMU_DATA},K::Array{Float64,2},Ki::Array{Float64,2}; cRi::Array{Float64,2} = eye(3))
+function predictHomographyIMU!(index::PInt64, ctime::Int64, imudata::Vector{IMU_DATA},K::Array{Float64,2},Ki::Array{Float64,2}; cRi::Array{Float64,2} = Matrix(1.0I, 3, 3))
 
-	R = eye(3)
+	R = Matrix(1.0I, 3, 3)
 
 	n = size(imudata,1)
 
 	#end of imudata
 	if (index.i >= n)
- 		return (false, eye(3))
+ 		return (false, Matrix(1.0I, 3, 3))
 	end
 
 	#increment index to start at 2 for integration, ignore first
-    (index.i < 2)? index.i+=1:nothing
+    (index.i < 2) ? index.i+=1 : nothing
 
 	while (index.i <= n) && (imudata[index.i].utime  <= ctime)
 
@@ -267,9 +267,9 @@ function predictHomographyIMU!(index::PInt64, ctime::Int64, imudata::Vector{IMU_
 
 	#compute homography
 	# H = K*R*inv(K)
-    R4 = eye(4)
+    R4 = Matrix(1.0I, 4, 4)
     R4[1:3,1:3] = R
-    K4 = eye(4)
+    K4 = Matrix(1.0I, 4, 4)
     K4[1:2,1:2] = K[1:2,1:2]
     K4[1:2,4] = K[1:2,3]
     H = K4*R4*inv(K4)
@@ -281,10 +281,10 @@ end
 
 function predictHomographyIMU(roll::Float64, pitch::Float64, yaw::Float64, K::Array{Float64,2}, Ki::Array{Float64,2})
 
-    R = eye(4)
+    R = Matrix(1.0I, 4, 4)
     R[1:3,1:3] = SO3(Euler(roll,pitch,yaw)).R
 
-    K4 = eye(4)
+    K4 = Matrix(1.0I, 4, 4)
     K4[1:2,1:2] = K[1:2,1:2]
     K4[1:2,4] = K[1:2,3]
     H = K4*R*inv(K4)

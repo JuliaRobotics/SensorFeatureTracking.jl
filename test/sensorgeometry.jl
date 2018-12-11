@@ -1,6 +1,7 @@
 using SensorFeatureTracking
 using TransformUtils
-using Base: Test
+using Test
+using LinearAlgebra
 
 
 @testset "SensorTracking" begin
@@ -12,8 +13,8 @@ using Base: Test
 
     bX = randn(10,3)
     aX = zeros(size(bX))
-    aV = Vector{Vector{Float64}}(10)
-    bV = Vector{Vector{Float64}}(10)
+    aV = Vector{Vector{Float64}}(undef,10)
+    bV = Vector{Vector{Float64}}(undef,10)
 
     for i in 1:size(bX,1)
     aX[i,:] = TU.rotate(aQb, bX[i,:])
@@ -102,11 +103,11 @@ using Base: Test
     end
 
     index = PInt64(1)
-    valid, H = predictHomographyIMU!(index, 1000000, imudata, cam.K, cam.Ki; cRi = eye(3))
+    valid, H = predictHomographyIMU!(index, 1000000, imudata, cam.K, cam.Ki; cRi = Matrix(1.0I, 3, 3))
 
     affinity = predictAffinity(H)
-    @test affinity_halppi.m ≈ affinity.m atol=1e-6
-    @test affinity_halppi.v ≈ affinity.v atol=1e-6
+    @test affinity_halppi.linear ≈ affinity.linear atol=1e-6
+    @test affinity_halppi.translation ≈ affinity.translation atol=1e-6
 
 
     # test predictHomographyIMU! with x axis rotation, test data made geometrically
@@ -124,7 +125,7 @@ using Base: Test
     end
 
     index = PInt64(1)
-    valid, H = predictHomographyIMU!(index, 1000000, imudata, cam.K, cam.Ki; cRi = eye(3))
+    valid, H = predictHomographyIMU!(index, 1000000, imudata, cam.K, cam.Ki; cRi = Matrix(1.0I, 3, 3))
     # @show H
     v_a  =  [[0.; 0], [0.; 30], [0.; -30], [0.; 60], [0.; -60]]
     ref_v_b = [[0.; 52.174], [0.; 82.652], [0.; 22.046], [0.; 113.488], [0.; -7.736]]

@@ -15,15 +15,15 @@ using TestImages
 
 
 # trying out different stuff
-# img = testimage("walkbridge")
+img = testimage("walkbridge")
 # img = testimage("livingroom")
 
 # io = VideoIO.open("sometest.mp4")
 # f = VideoIO.openvideo(io)
 # f = VideoIO.testvideo("annie_oakley")
-f = VideoIO.opencamera()
-img = read(f);
-close(f)
+# f = VideoIO.opencamera()
+# img = read(f);
+# close(f)
 # size(img)
 
 imgg = Gray.(img);

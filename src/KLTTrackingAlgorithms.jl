@@ -157,7 +157,6 @@ downsampleFactor_setup  downsampleFactor_setup = 2: use pyramid images (first tr
 
 Returns two structures, one of type ImageTrackerVariables and one of type ImageTrackerConstants
 """
-
 function ImageTrackerSetup(orgI_setup, corners; windowSize = 20, TrackingType_setup = "Inversed")
 
     if (TrackingType_setup == "Pyramid" || TrackingType_setup == "InversedPyramid")
@@ -534,7 +533,6 @@ ITConst: construct of constants of type ImageTrackerConstants
 
 Returns nothing, updates p_reference[2,:] with the new coordinates of the tracked features
 """
-
 function KTL_Tracker!(ITVar, ITConst)
 
     for corner_i = 1:ITConst.number_features
@@ -574,7 +572,6 @@ corner_i:index of selected corner in ITVar.p_reference to do tracking on
 
 Returns nothing, updates p_reference[2,corner_i] with the new coordinates of the tracked feature
 """
-
 function trackOneFeatureInversePyramid(ITVar, ITConst, corner_i)
     Threshold = 0.2
     converged = true
@@ -673,7 +670,6 @@ corner_i:index of selected corner in ITVar.p_reference to do tracking on
 Returns nothing, updates p_reference[2,corner_i] with the new coordinates of the tracked feature
 Does not use orgI_downsample or I_nextFrame_downsample at all, downsampleFactor must be 1
 """
-
 function trackOneFeatureInverse(ITVar, ITConst, corner_i)
     Threshold = 0.2
     converged = true
@@ -750,7 +746,6 @@ corner_i:index of selected corner in ITVar.p_reference to do tracking on
 Returns nothing, updates p_reference[2,corner_i] with the new coordinates of the tracked feature
 Use orgI_downsample and I_nextFrame_downsample to track features, downsampleFactor must be 2 for now, can be increased in future work
 """
-
 function trackOneFeaturePyramid(ITVar, ITConst, corner_i)
     Threshold = 0.2
     converged = true
@@ -873,7 +868,6 @@ corner_i:index of selected corner in ITVar.p_reference to do tracking on
 Returns nothing, updates p_reference[2,corner_i] with the new coordinates of the tracked feature
 Does not use orgI_downsample or I_nextFrame_downsample at all, downsampleFactor must be 1
 """
-
 function trackOneFeature(ITVar, ITConst, corner_i)
     Threshold = 0.2
     converged = true
