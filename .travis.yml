@@ -4,7 +4,8 @@ os:
 before_install:
   sudo apt-get install libgtk-3-0
 julia:
-  - 0.6
+  - 0.7
+  - 1.0
   - nightly
 notifications:
   email: false
@@ -27,11 +28,25 @@ addons:
       - xvfb
       - xauth
       - libgtk-3-0
-script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - if [[ `uname` = "Linux" ]]; then TESTCMD="xvfb-run julia"; else TESTCMD="julia"; fi
-  - $TESTCMD --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.test("SensorFeatureTracking"; coverage=true)'
+# try and use default for now
+# script:
+#   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+#   - if [[ `uname` = "Linux" ]]; then TESTCMD="xvfb-run julia"; else TESTCMD="julia"; fi
+#   - $TESTCMD --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.test("SensorFeatureTracking"; coverage=true)'
 after_success:
-  - julia -e 'cd(Pkg.dir("SensorFeatureTracking")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
-  - julia -e 'Pkg.add("Documenter")'
-  - $TESTCMD -e 'cd(Pkg.dir("SensorFeatureTracking")); include(joinpath("docs", "make.jl"))'
+  # - julia -e 'using Pkg; cd(Pkg.dir("SensorFeatureTracking")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
+  - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
+  # - julia -e 'Pkg.add("Documenter")'
+  # - $TESTCMD -e 'cd(Pkg.dir("SensorFeatureTracking")); include(joinpath("docs", "make.jl"))'
+
+jobs:
+  include:
+    - stage: "Documentation"
+      julia: 1.0
+      os: linux
+      script:
+        - julia -e 'import Pkg; Pkg.add("Documenter")'
+        - julia --project=docs/ -e 'using Pkg; Pkg.instantiate();
+                                    Pkg.develop(PackageSpec(path=pwd()))'
+        - julia --project=docs/ docs/make.jl
+      after_success: skip
