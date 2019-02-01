@@ -29,10 +29,10 @@ addons:
       - xauth
       - libgtk-3-0
 # try and use default for now
-# script:
-#   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-#   - if [[ `uname` = "Linux" ]]; then TESTCMD="xvfb-run julia"; else TESTCMD="julia"; fi
-#   - $TESTCMD --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.test("SensorFeatureTracking"; coverage=true)'
+script:
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - if [[ `uname` = "Linux" ]]; then TESTCMD="xvfb-run julia"; else TESTCMD="julia"; fi
+  - $TESTCMD --check-bounds=yes -e 'using Pkg; Pkg.clone(pwd()); Pkg.test("SensorFeatureTracking"; coverage=true)'
 after_success:
   # - julia -e 'using Pkg; cd(Pkg.dir("SensorFeatureTracking")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
   - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
